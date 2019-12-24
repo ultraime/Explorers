@@ -3,6 +3,7 @@ package com.ultraime.game.gdxtraime.monde;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -21,7 +22,8 @@ import com.ultraime.game.gdxtraime.entite.EntiteVivante;
 import com.ultraime.game.gdxtraime.parametrage.Parametre;
 
 public class Monde {
-
+	static final float STEP_TIME = 1f / 300f;
+	float accumulator = 0;
 	// Le vrai monde, avec les stats normal (petit nombre)
 	public World world;
 	public float gravite = -50f;
@@ -31,14 +33,13 @@ public class Monde {
 
 	// entite Body dans le monde.
 	public ArrayList<Body> bodiesEntiteVivant = new ArrayList<Body>();
-
+	public ArrayList<Body> bodiesBullets = new ArrayList<Body>();
 	// les entites static sont une liste de body + rectangle
 	private List<Rectangle> rectangleBodies;
 
-	// World utilisé surtout pour le debug
-	public World worldAffichage;
-	public ArrayList<Body> bodiesAffichageEntiteVivant = new ArrayList<Body>();
 	public Box2DDebugRenderer debugRenderer;
+	OrthographicCamera cameraDebug = new OrthographicCamera(Parametre.LARGEUR_ECRAN / MULTIPLICATEUR,
+			Parametre.HAUTEUR_ECRAN / MULTIPLICATEUR);
 
 	// affichage
 	private SpriteBatch batch;
@@ -60,7 +61,6 @@ public class Monde {
 	public Monde(final float gravite) {
 		this.gravite = gravite;
 		world = new World(new Vector2(0, gravite), true);
-		worldAffichage = new World(new Vector2(0, 0), true);
 		this.debugRenderer = new Box2DDebugRenderer();
 		this.batch = new SpriteBatch();
 		this.rectangleBodies = new ArrayList<>();
@@ -72,10 +72,14 @@ public class Monde {
 			carte.render();
 		}
 		if (!Parametre.PAUSE) {
-			world.step(1 / 60f, 6, 2);
-			worldAffichage.step(1 / 60f, 6, 2);
+			float deltaTime = Gdx.graphics.getDeltaTime();
+			float frameTime = Math.min(deltaTime, 0.25f);
+			accumulator += frameTime;
+			while (accumulator >= STEP_TIME) {
+				world.step(STEP_TIME, 6, 2);
+				accumulator -= STEP_TIME;
+			}
 		}
-		// tempsAnimation += Gdx.graphics.getDeltaTime();
 		this.batch.begin();
 		gestionBodies();
 
@@ -105,9 +109,6 @@ public class Monde {
 		final float hauteur = entiteStatic.getHauteur();
 		MondeBodyService.creerRectangleStatic(world, x, y, largeur, hauteur, entiteStatic);
 
-		MondeBodyService.creerRectangleStatic(worldAffichage, x * MULTIPLICATEUR + 32, y * MULTIPLICATEUR + 32,
-				largeur * MULTIPLICATEUR, hauteur * MULTIPLICATEUR, entiteStatic);
-
 		Rectangle rectangle = new Rectangle(x, y, entiteStatic.getLargeur() / 2f, entiteStatic.getHauteur() / 2f);
 		rectangleBodies.add(rectangle);
 	}
@@ -116,20 +117,30 @@ public class Monde {
 	 * Ajoute une entité au monde. Retourne le body de l'entité crée
 	 * 
 	 * @param entiteVivante
-	 * @return Body body
+	 * @param radius        0.4f
+	 * @return
 	 */
-	public Body addEntiteVivante(final EntiteVivante entiteVivante) {
-		final float radius = 0.4f;
+	public Body addEntiteVivante(final EntiteVivante entiteVivante, final float radius) {
 		final float posx = entiteVivante.x;
 		final float posy = entiteVivante.y;
-
 		Body body = MondeBodyService.creerCercleVivant(world, radius, posx, posy, entiteVivante);
-		Body bodyAffichage = MondeBodyService.creerCercleVivant(worldAffichage, MULTIPLICATEUR * radius,
-				posx * MULTIPLICATEUR + 32, posy * MULTIPLICATEUR + 32, entiteVivante);
-
 		bodiesEntiteVivant.add(body);
-		bodiesAffichageEntiteVivant.add(bodyAffichage);
+		return body;
+	}
 
+	/**
+	 * 
+	 * Ajoute une bullet au monde. Retourne le body de la bullet cr�e
+	 * 
+	 * @param entiteVivante
+	 * @param radius        0.4f
+	 * @return
+	 */
+	public Body addBullet(final EntiteVivante entiteVivante, final float radius) {
+		final float posx = entiteVivante.x;
+		final float posy = entiteVivante.y;
+		Body body = MondeBodyService.creerCercleVivant(world, radius, posx, posy, entiteVivante);
+		bodiesBullets.add(body);
 		return body;
 	}
 
@@ -140,13 +151,6 @@ public class Monde {
 			final EntiteVivante entiteVivante = (EntiteVivante) body.getUserData();
 			final float x = body.getPosition().x * MULTIPLICATEUR;
 			final float y = body.getPosition().y * MULTIPLICATEUR;
-
-			final Body bodyAffichage = bodiesAffichageEntiteVivant.get(i);
-			bodyAffichage.setTransform(body.getPosition().x * MULTIPLICATEUR + (MULTIPLICATEUR / 2),
-					body.getPosition().y * MULTIPLICATEUR + (MULTIPLICATEUR / 2), 0);
-			// bodyAffichage.getPosition().x = body.getPosition().x;
-			// bodyAffichage.getPosition().y = body.getPosition().y;
-
 			entiteVivante.render(batch, x, y);
 		}
 
@@ -158,12 +162,27 @@ public class Monde {
 	public void renderDebug(final OrthographicCamera camera) {
 		if (Parametre.MODE_DEBUG) {
 			try {
-				this.debugRenderer.render(world, camera.combined);
-				this.debugRenderer.render(worldAffichage, camera.combined);
+				this.debugRenderer.render(world, cameraDebug.combined);
+//				this.debugRenderer.render(worldAffichage, camera.combined);
 			} catch (IllegalStateException e) {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void removeEntiteStatic(final Body body, final ArrayList<Body> arrayBody) {
+
+		if (body.getUserData() instanceof EntiteStatic) {
+			final float posX = body.getPosition().x;
+			final float posY = body.getPosition().y;
+			for (Rectangle rect : rectangleBodies) {
+				if (rect.x == posX && rect.y == posY) {
+					rectangleBodies.remove(rect);
+					break;
+				}
+			}
+		}
+		arrayBody.remove(body);
 	}
 
 	public void removeEntiteStatic(int posX, int posY) {
@@ -174,14 +193,6 @@ public class Monde {
 				if (posX == body.getPosition().x && posY == body.getPosition().y) {
 					world.destroyBody(body);
 					bodiesEntiteVivant.remove(body);
-					break;
-				}
-			}
-			worldAffichage.getBodies(bodies);
-			for (Body body : bodies) {
-				if (posX * MULTIPLICATEUR + 32 == body.getPosition().x
-						&& posY * MULTIPLICATEUR + 32 == body.getPosition().y) {
-					worldAffichage.destroyBody(body);
 					break;
 				}
 			}
@@ -226,7 +237,7 @@ public class Monde {
 
 			}
 		};
-		worldAffichage.QueryAABB(callback, point.x - 0.1f, point.y - 0.1f, point.x + 0.1f, point.y + 0.1f);
+		world.QueryAABB(callback, point.x - 0.1f, point.y - 0.1f, point.x + 0.1f, point.y + 0.1f);
 		if (bodyTouche != null) {
 			bodyToucheAretourner = bodyTouche;
 			bodyTouche = null;
@@ -242,7 +253,6 @@ public class Monde {
 	public void dispose() {
 		this.batch.dispose();
 		this.world.dispose();
-		this.worldAffichage.dispose();
 		this.debugRenderer.dispose();
 		this.carte.dispose();
 	}

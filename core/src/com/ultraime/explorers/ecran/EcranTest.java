@@ -1,17 +1,27 @@
 package com.ultraime.explorers.ecran;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.ultraime.game.gdxtraime.ecran.Ecran;
 import com.ultraime.game.gdxtraime.ecran.EcranManagerAbstract;
+import com.ultraime.game.gdxtraime.entite.EntiteVivante;
 import com.ultraime.game.gdxtraime.monde.CameraGame;
 import com.ultraime.game.gdxtraime.monde.Monde;
 
+/**
+ * @author ultraime Ecran pour des test
+ */
 public class EcranTest extends Ecran {
 
 	public Monde monde;
 	private CameraGame cameraGame;
 
+	private EntiteVivante entiteVivante;
+	private Body bodyEntiteVivante;
 	private boolean isDispose = false;
 
 	@Override
@@ -28,9 +38,9 @@ public class EcranTest extends Ecran {
 		this.cameraGame.camera.position.y = 0;
 
 		this.monde = new Monde(0);
+		entiteVivante = new EntiteVivante(0, 0, 5);
+		bodyEntiteVivante = this.monde.addEntiteVivante(entiteVivante,0.4f);
 	}
-	
-	
 
 	private void updateCamera() {
 
@@ -56,7 +66,24 @@ public class EcranTest extends Ecran {
 
 	@Override
 	public boolean keyDown(int keycode) {
+		switch (keycode) {
+		case Input.Keys.SPACE:
+			shot();
+			break;
+		case Input.Keys.D:
+			bodyEntiteVivante.setLinearVelocity(5, 0);
+			break;
+		case Input.Keys.Q:
+			bodyEntiteVivante.setLinearVelocity( -5, 0);
+			break;
+		default:
+			break;
+		}
 		return false;
+	}
+	
+	public void shot() {
+		
 	}
 
 	@Override
@@ -87,6 +114,13 @@ public class EcranTest extends Ecran {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
+
+		Vector3 mousePos = new Vector3(screenX, screenY, 0);
+		cameraGame.camera.unproject(mousePos);
+		float angle = new Vector2(mousePos.x, mousePos.y).sub(bodyEntiteVivante.getPosition()).angleRad();
+		bodyEntiteVivante.setTransform(bodyEntiteVivante.getPosition(), angle);
+		  
+		  
 		return false;
 	}
 

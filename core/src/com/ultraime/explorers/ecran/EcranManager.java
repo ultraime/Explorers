@@ -6,6 +6,10 @@ import com.ultraime.game.gdxtraime.ecran.EcranDebug;
 import com.ultraime.game.gdxtraime.ecran.EcranManagerAbstract;
 import com.ultraime.game.gdxtraime.parametrage.Parametre;
 
+/**
+ * @author ultraime
+ * Gére l'affichage des écrans
+ */
 public class EcranManager extends EcranManagerAbstract {
 
 	public EcranPrincipal ecranPrincipal;

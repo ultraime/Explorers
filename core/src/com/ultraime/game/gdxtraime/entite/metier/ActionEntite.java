@@ -103,14 +103,14 @@ public abstract class ActionEntite implements Comparable<ActionEntite>, Serializ
 			}
 		}
 		try {
-			ArrayList<Body> bodiesAffichage = monde.bodiesAffichageEntiteVivant;
+			ArrayList<Body> bodiesAffichage = monde.bodiesEntiteVivant;
 			final EntiteVivante ev = (EntiteVivante) body.getUserData();
 			for (int i = 0; i < bodiesAffichage.size(); i++) {
 				final Body bodyAfficher = bodiesAffichage.get(i);
 				if (bodyAfficher.getUserData() instanceof EntiteVivante) {
 					final EntiteVivante evAfficher = (EntiteVivante) bodyAfficher.getUserData();
 					if (evAfficher.id == ev.id) {
-						bodyAfficher.setTransform(body.getPosition().x * 64 + 32, body.getPosition().y * 64 + 32, 0);
+						bodyAfficher.setTransform(body.getPosition().x , body.getPosition().y , 0);
 						evAfficher.x = body.getPosition().x;
 						evAfficher.y = body.getPosition().y;
 						if (direction != -1) {

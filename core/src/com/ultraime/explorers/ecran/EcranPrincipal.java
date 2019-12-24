@@ -7,6 +7,10 @@ import com.ultraime.game.gdxtraime.ecran.Ecran;
 import com.ultraime.game.gdxtraime.ecran.EcranManagerAbstract;
 import com.ultraime.game.gdxtraime.parametrage.Parametre;
 
+/**
+ * @author ultraime
+ * Ecran de base pour démarrer une partie
+ */
 public class EcranPrincipal extends Ecran {
 
 	private Bouton boutonStartPartie;
