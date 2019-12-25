@@ -42,9 +42,7 @@ public class MondeBodyService {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(posX, posY);
-
 		Body body = world.createBody(bodyDef);
-
 		CircleShape circle = new CircleShape();
 		circle.setRadius(diametre);
 		FixtureDef fixtureDef = new FixtureDef();
@@ -58,5 +56,22 @@ public class MondeBodyService {
 		body.setUserData(objet);
 		return body;
 	}
-
+	public static Body creerCercleBullet(World world, float diametre, float posX, float posY, final Object objet) {
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = BodyType.DynamicBody;
+		bodyDef.position.set(posX, posY);
+		Body body = world.createBody(bodyDef);
+		CircleShape circle = new CircleShape();
+		circle.setRadius(diametre);
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = circle;
+		fixtureDef.density = 0.5f;
+		// pour le rebond
+		fixtureDef.friction = 0.0f;
+		fixtureDef.restitution = 0.0f;
+		fixtureDef.filter.groupIndex = -2;// pour entite a ne pas etre en colli
+		body.createFixture(fixtureDef);
+		body.setUserData(objet);
+		return body;
+	}
 }

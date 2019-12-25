@@ -117,7 +117,8 @@ public class Monde {
 	 * Ajoute une entité au monde. Retourne le body de l'entité crée
 	 * 
 	 * @param entiteVivante
-	 * @param radius        0.4f
+	 * @param radius
+	 *            0.4f
 	 * @return
 	 */
 	public Body addEntiteVivante(final EntiteVivante entiteVivante, final float radius) {
@@ -133,13 +134,14 @@ public class Monde {
 	 * Ajoute une bullet au monde. Retourne le body de la bullet cr�e
 	 * 
 	 * @param entiteVivante
-	 * @param radius        0.4f
+	 * @param radius
+	 *            0.4f
 	 * @return
 	 */
 	public Body addBullet(final EntiteVivante entiteVivante, final float radius) {
 		final float posx = entiteVivante.x;
 		final float posy = entiteVivante.y;
-		Body body = MondeBodyService.creerCercleVivant(world, radius, posx, posy, entiteVivante);
+		Body body = MondeBodyService.creerCercleBullet(world, radius, posx, posy, entiteVivante);
 		bodiesBullets.add(body);
 		return body;
 	}
@@ -157,21 +159,21 @@ public class Monde {
 	}
 
 	/**
-	 * @param OrthographicCamera camera
+	 * @param OrthographicCamera
+	 *            camera
 	 */
 	public void renderDebug(final OrthographicCamera camera) {
 		if (Parametre.MODE_DEBUG) {
 			try {
 				this.debugRenderer.render(world, cameraDebug.combined);
-//				this.debugRenderer.render(worldAffichage, camera.combined);
+				// this.debugRenderer.render(worldAffichage, camera.combined);
 			} catch (IllegalStateException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public void removeEntiteStatic(final Body body, final ArrayList<Body> arrayBody) {
-
+	public void removeEntite(final Body body, final ArrayList<Body> arrayBody) {
 		if (body.getUserData() instanceof EntiteStatic) {
 			final float posX = body.getPosition().x;
 			final float posY = body.getPosition().y;
