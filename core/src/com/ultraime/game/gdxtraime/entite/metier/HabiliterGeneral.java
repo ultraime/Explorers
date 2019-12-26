@@ -13,7 +13,7 @@ public class HabiliterGeneral implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// stat de base
-	public float vitesse = 8f;// 3f
+	public float vitesse = 5f;// 3f
 	public float acceleration = 10f;
 	public float saut = 270f;
 	public int sante[];

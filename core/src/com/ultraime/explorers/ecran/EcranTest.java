@@ -3,11 +3,8 @@ package com.ultraime.explorers.ecran;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.ultraime.explorers.entite.Bullet;
+import com.ultraime.explorers.service.JoueurService;
 import com.ultraime.game.gdxtraime.ecran.Ecran;
 import com.ultraime.game.gdxtraime.ecran.EcranManagerAbstract;
 import com.ultraime.game.gdxtraime.entite.EntiteVivante;
@@ -20,12 +17,14 @@ import com.ultraime.game.gdxtraime.monde.Monde;
 public class EcranTest extends Ecran {
 
 	public Monde monde;
-	private CameraGame cameraGame;
 
-	private EntiteVivante entiteVivante;
-	private Body bodyEntiteVivante;
+	private CameraGame cameraGame;
+	private Vector2 positionSouris;
+
 	private boolean isDispose = false;
-	Vector3 mousePos = new Vector3();
+
+	public JoueurService joueurService;
+
 	@Override
 	public void changerEcran(InputMultiplexer inputMultiplexer) {
 		inputMultiplexer.addProcessor(this);
@@ -34,14 +33,18 @@ public class EcranTest extends Ecran {
 	@Override
 	public void create(final EcranManagerAbstract ecranManager) {
 		this.ecranManager = (EcranManager) ecranManager;
+		this.positionSouris = new Vector2(0, 0);
 		this.batch = new SpriteBatch();
 		this.cameraGame = new CameraGame();
 		this.cameraGame.camera.position.x = 0;
 		this.cameraGame.camera.position.y = 0;
 
 		this.monde = new Monde(0);
-		entiteVivante = new EntiteVivante(0, 0, 0.4f);
-		bodyEntiteVivante = this.monde.addEntiteVivante(entiteVivante,0.4f);
+
+		EntiteVivante entiteVivante = new EntiteVivante(0, 0, 0.4f, (short) -1);
+
+		joueurService = new JoueurService(this.monde.addEntiteVivante(entiteVivante, this.monde.bodiesEntiteVivant));
+
 	}
 
 	private void updateCamera() {
@@ -54,6 +57,7 @@ public class EcranTest extends Ecran {
 		if (!isDispose) {
 			this.batch.begin();
 			this.monde.render();
+			joueurService.rotation((int) positionSouris.x, (int) positionSouris.y, cameraGame.camera);
 			this.monde.renderDebug(cameraGame.camera);
 			this.batch.end();
 		}
@@ -66,64 +70,79 @@ public class EcranTest extends Ecran {
 		isDispose = true;
 	}
 
+	public void deplacementJoueur() {
+		short directionX = 0;
+		short directionY = 0;
+
+		if (isTouchPressed(Input.Keys.D)) {
+			directionX = 1;
+			System.err.println(1);
+		} else if (isTouchPressed(Input.Keys.Q)) {
+			directionX = -1;
+		}
+
+		if (isTouchPressed(Input.Keys.Z)) {
+			directionY = 1;
+		} else if (isTouchPressed(Input.Keys.S)) {
+			directionY = -1;
+		}
+		joueurService.deplacer(directionX, directionY);
+	}
+
 	@Override
 	public boolean keyDown(int keycode) {
-		switch (keycode) {
-		case Input.Keys.SPACE:
-			break;
-		case Input.Keys.D:
-			bodyEntiteVivante.setLinearVelocity(5, 0);
-			break;
-		case Input.Keys.Q:
-			bodyEntiteVivante.setLinearVelocity( -5, 0);
-			break;
-		default:
-			break;
-		}
+		presserTouche(keycode);
+		deplacementJoueur();
+
+//		switch (keycode) {
+//		case Input.Keys.SPACE:
+//			break;
+//		case Input.Keys.D:
+//			bodyEntiteVivante.setLinearVelocity(5, 0);
+//			break;
+//		case Input.Keys.Q:
+//			bodyEntiteVivante.setLinearVelocity(-5, 0);
+//			break;
+//		default:
+//			break;
+//		}
 		return false;
 	}
-	
-	public void shot(float screenX,float screenY) {
-		mousePos = new Vector3(screenX, screenY, 0);
-		cameraGame.camera.unproject(mousePos);
-		float angle = new Vector2(mousePos.x, mousePos.y).sub(bodyEntiteVivante.getPosition()).angleRad();
-		bodyEntiteVivante.setTransform(bodyEntiteVivante.getPosition(), angle);
-		
-		float velocity = 10f;
-		
-		float velX = MathUtils.cos(angle) * velocity; // X-component.
-		float velY = MathUtils.sin(angle) * velocity;
-		
-		float posX = bodyEntiteVivante.getPosition().x ; // X-component.
-		float posY =  bodyEntiteVivante.getPosition().y;
-//		if(posY < bodyEntiteVivante.getPosition().y){
-//			posY += 0.4f;
-//		}else{
-//			posY -= 0.4f;
-//		}
-//		if(posX < bodyEntiteVivante.getPosition().x){
-//			posX += 0.4f;
-//		}else{
-//			posX -= 0.4f;
-//		}
-		EntiteVivante bullet = new EntiteVivante(posX,posY, 0.04f);
-		Body body = this.monde.addBullet(bullet, 0.04f);
-		body.setLinearVelocity(velX, velY);
+
+	public void shot(float screenX, float screenY) {
+//		mousePos = new Vector3(screenX, screenY, 0);
+//		cameraGame.camera.unproject(mousePos);
+//		float angle = new Vector2(mousePos.x, mousePos.y).sub(bodyEntiteVivante.getPosition()).angleRad();
+//		bodyEntiteVivante.setTransform(bodyEntiteVivante.getPosition(), angle);
+//
+//		float velocity = 10f;
+//
+//		float velX = MathUtils.cos(angle) * velocity; // X-component.
+//		float velY = MathUtils.sin(angle) * velocity;
+//
+//		float posX = bodyEntiteVivante.getPosition().x; // X-component.
+//		float posY = bodyEntiteVivante.getPosition().y;
+//
+//		EntiteVivante bullet = new EntiteVivante(posX, posY, 0.04f, (short) -1);
+//		Body body = this.monde.addEntiteVivante(bullet, this.monde.bodiesBullets);
+//		body.setLinearVelocity(velX, velY);
 
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
-		switch (keycode) {
-		case Input.Keys.D:
-			bodyEntiteVivante.setLinearVelocity(0, 0);
-			break;
-		case Input.Keys.Q:
-			bodyEntiteVivante.setLinearVelocity( 0, 0);
-			break;
-		default:
-			break;
-		}
+		relacherTouche(keycode);
+		deplacementJoueur();
+//		switch (keycode) {
+//		case Input.Keys.D:
+//			bodyEntiteVivante.setLinearVelocity(0, 0);
+//			break;
+//		case Input.Keys.Q:
+//			bodyEntiteVivante.setLinearVelocity(0, 0);
+//			break;
+//		default:
+//			break;
+//		}
 		return false;
 	}
 
@@ -134,8 +153,8 @@ public class EcranTest extends Ecran {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if(button == 0){
-			shot(screenX,screenY);
+		if (button == 0) {
+			shot(screenX, screenY);
 		}
 
 		return false;
@@ -153,11 +172,13 @@ public class EcranTest extends Ecran {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
+		positionSouris.x = screenX;
+		positionSouris.y = screenY;
 
-		mousePos = new Vector3(screenX, screenY, 0);
-		cameraGame.camera.unproject(mousePos);
-		float angle = new Vector2(mousePos.x, mousePos.y).sub(bodyEntiteVivante.getPosition()).angleRad();
-		bodyEntiteVivante.setTransform(bodyEntiteVivante.getPosition(), angle);
+//		mousePos = new Vector3(screenX, screenY, 0);
+//		cameraGame.camera.unproject(mousePos);
+//		float angle = new Vector2(mousePos.x, mousePos.y).sub(bodyEntiteVivante.getPosition()).angleRad();
+//		bodyEntiteVivante.setTransform(bodyEntiteVivante.getPosition(), angle);
 
 		return false;
 	}

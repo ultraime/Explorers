@@ -2,6 +2,8 @@ package com.ultraime.game.gdxtraime.entite;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.physics.box2d.Body;
+
 public class Entite implements Serializable {
 	/**
 	 * 

@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.ultraime.game.gdxtraime.entite.EntiteVivante;
 
 /**
  * @author Ultraime Extension de la classe Monde, uniquement pour les méthodes
@@ -38,40 +39,45 @@ public class MondeBodyService {
 
 	}
 
-	public static Body creerCercleVivant(World world, float diametre, float posX, float posY, final Object objet) {
+	public static Body creerCercleVivant(World world, final EntiteVivante entiteVivante) {
+		final float posX = entiteVivante.x;
+		final float posY = entiteVivante.y;
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(posX, posY);
 		Body body = world.createBody(bodyDef);
 		CircleShape circle = new CircleShape();
-		circle.setRadius(diametre);
+		circle.setRadius(entiteVivante.cercleShape.radius);
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = circle;
 		fixtureDef.density = 0.5f;
 		// pour le rebond
 		fixtureDef.friction = 0.0f;
 		fixtureDef.restitution = 0.0f;
-		fixtureDef.filter.groupIndex = -2;// pour entite a ne pas etre en colli
+		fixtureDef.filter.groupIndex = entiteVivante.idGroup;// pour entite a ne pas etre en colli
 		body.createFixture(fixtureDef);
-		body.setUserData(objet);
+		body.setUserData(entiteVivante);
 		return body;
 	}
-	public static Body creerCercleBullet(World world, float diametre, float posX, float posY, final Object objet) {
+
+	public static Body creerCercleBullet(World world, final EntiteVivante entiteVivante) {
+		final float posX = entiteVivante.x;
+		final float posY = entiteVivante.y;
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(posX, posY);
 		Body body = world.createBody(bodyDef);
 		CircleShape circle = new CircleShape();
-		circle.setRadius(diametre);
+		circle.setRadius(entiteVivante.cercleShape.radius);
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = circle;
 		fixtureDef.density = 0.5f;
 		// pour le rebond
 		fixtureDef.friction = 0.0f;
 		fixtureDef.restitution = 0.0f;
-		fixtureDef.filter.groupIndex = -2;// pour entite a ne pas etre en colli
+		fixtureDef.filter.groupIndex = entiteVivante.idGroup;// pour entite a ne pas etre en colli
 		body.createFixture(fixtureDef);
-		body.setUserData(objet);
+		body.setUserData(entiteVivante);
 		return body;
 	}
 }
