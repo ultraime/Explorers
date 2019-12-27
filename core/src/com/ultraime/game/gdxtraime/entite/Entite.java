@@ -2,8 +2,6 @@ package com.ultraime.game.gdxtraime.entite;
 
 import java.io.Serializable;
 
-import com.badlogic.gdx.physics.box2d.Body;
-
 public class Entite implements Serializable {
 	/**
 	 * 
@@ -12,6 +10,7 @@ public class Entite implements Serializable {
 	public static int ID = 0;
 	public int id;
 	public float x, y;
+	public boolean isDeleted = false;
 
 	public Entite(float x, float y) {
 		super();

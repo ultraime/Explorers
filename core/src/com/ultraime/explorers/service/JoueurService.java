@@ -1,10 +1,12 @@
 package com.ultraime.explorers.service;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.ultraime.game.gdxtraime.entite.EntiteVivante;
+import com.ultraime.game.gdxtraime.monde.Monde;
 
 public class JoueurService {
 
@@ -43,6 +45,29 @@ public class JoueurService {
 		}
 
 		bodyJoueur.setLinearVelocity(veloX, veloY);
+	}
+	
+
+	public void shot(final int screenX,final int screenY,final OrthographicCamera camera,final Monde monde) {
+//		Vector2 positionSouris = new Vector2(screenX,screenY);
+		Vector3 mousePos = new Vector3(screenX, screenY, 0);
+		camera.unproject(mousePos);
+		float angle = new Vector2(mousePos.x, mousePos.y).sub(bodyJoueur.getPosition()).angleRad();
+		bodyJoueur.setTransform(bodyJoueur.getPosition(), angle);
+		
+		float velocity = 10f;
+
+		float velX = MathUtils.cos(angle) * velocity; // X-component.
+		float velY = MathUtils.sin(angle) * velocity;
+
+		float posX = bodyJoueur.getPosition().x; // X-component.
+		float posY = bodyJoueur.getPosition().y;
+
+		EntiteVivante bullet = new EntiteVivante(posX, posY, 0.04f, (short) -1);
+		Body body = monde.addEntiteVivante(bullet, monde.bodiesBullets);
+		body.setBullet(true);
+		body.setLinearVelocity(velX, velY);
+		
 	}
 
 }

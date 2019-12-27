@@ -17,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.ultraime.game.gdxtraime.carte.Carte;
+import com.ultraime.game.gdxtraime.entite.Entite;
 import com.ultraime.game.gdxtraime.entite.EntiteStatic;
 import com.ultraime.game.gdxtraime.entite.EntiteVivante;
 import com.ultraime.game.gdxtraime.parametrage.Parametre;
@@ -84,6 +85,8 @@ public class Monde {
 		gestionBodies();
 
 		this.batch.end();
+		removeDeathEntite(bodiesEntiteVivant);
+		removeDeathEntite(bodiesBullets);
 	}
 
 	public Body recupererBodyFromEntite(final EntiteVivante entiteVivante) {
@@ -126,7 +129,7 @@ public class Monde {
 			bodiesEntiteVivant.add(body);
 		} else if (bodiesEntites == bodiesBullets) {
 			body = MondeBodyService.creerCercleBullet(world, entiteVivante);
-			bodiesEntiteVivant.add(body);
+			bodiesBullets.add(body);
 		}
 		return body;
 	}
@@ -158,17 +161,8 @@ public class Monde {
 	}
 
 	public void removeEntite(final Body body, final ArrayList<Body> arrayBody) {
-		if (body.getUserData() instanceof EntiteStatic) {
-			final float posX = body.getPosition().x;
-			final float posY = body.getPosition().y;
-			for (Rectangle rect : rectangleBodies) {
-				if (rect.x == posX && rect.y == posY) {
-					rectangleBodies.remove(rect);
-					break;
-				}
-			}
-		}
 		arrayBody.remove(body);
+		world.destroyBody(body);
 	}
 
 	public void removeEntiteStatic(int posX, int posY) {
@@ -241,6 +235,21 @@ public class Monde {
 		this.world.dispose();
 		this.debugRenderer.dispose();
 		this.carte.dispose();
+
 	}
 
+	private void removeDeathEntite(ArrayList<Body> arrayList) {
+
+		Entite entite = null;
+
+		for (int i = 0; i < arrayList.size(); i++) {
+			Body body = arrayList.get(i);
+			entite = (Entite) body.getUserData();
+			if (entite.isDeleted) {
+				this.world.destroyBody(body);
+				arrayList.remove(arrayList.get(i));
+			}
+		}
+
+	}
 }
