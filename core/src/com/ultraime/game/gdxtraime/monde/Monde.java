@@ -152,12 +152,19 @@ public class Monde {
 	public void renderDebug(final OrthographicCamera camera) {
 		if (Parametre.MODE_DEBUG) {
 			try {
+				cameraDebug.position.x = 1000;
 				this.debugRenderer.render(world, cameraDebug.combined);
 				// this.debugRenderer.render(worldAffichage, camera.combined);
 			} catch (IllegalStateException e) {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void updateDebugCamera(final Vector2 vec){
+		cameraDebug.position.x = vec.x ;
+		cameraDebug.position.x = vec.y ;
+	
 	}
 
 	public void removeEntite(final Body body, final ArrayList<Body> arrayBody) {

@@ -2,6 +2,7 @@ package com.ultraime.explorers.ecran;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -31,6 +32,8 @@ public class EcranTest extends Ecran {
 	@Override
 	public void changerEcran(InputMultiplexer inputMultiplexer) {
 		inputMultiplexer.addProcessor(this);
+		this.cameraGame.camera.position.x = joueurService.bodyJoueur.getPosition().x;
+		this.cameraGame.camera.position.y =joueurService.bodyJoueur.getPosition().y;
 	}
 
 	@Override
@@ -55,7 +58,14 @@ public class EcranTest extends Ecran {
 	}
 
 	private void updateCamera() {
-
+		this.cameraGame.updateCamera();
+		this.cameraGame.camera.position.x = joueurService.bodyJoueur.getPosition().x * 64;
+		this.cameraGame.camera.position.y =joueurService.bodyJoueur.getPosition().y * 64;
+		OrthographicCamera camera = this.cameraGame.camera;
+		batch.setProjectionMatrix(camera.combined);
+//		this.mondeService.monde.updateCamera(camera);
+		
+		this.mondeService.monde.updateDebugCamera(joueurService.bodyJoueur.getPosition());
 	}
 
 	@Override
@@ -69,6 +79,8 @@ public class EcranTest extends Ecran {
 			this.batch.end();
 		}
 	}
+	
+	
 
 	@Override
 	public void dispose() {
