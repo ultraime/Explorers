@@ -23,8 +23,8 @@ import com.ultraime.game.gdxtraime.entite.EntiteVivante;
 import com.ultraime.game.gdxtraime.parametrage.Parametre;
 
 public class Monde {
-	static final float STEP_TIME = 1f / 300f;
-	float accumulator = 0;
+	public static final float STEP_TIME = 1f / 300f;
+	public float accumulator = 0;
 	// Le vrai monde, avec les stats normal (petit nombre)
 	public World world;
 	public float gravite = -50f;
@@ -39,11 +39,11 @@ public class Monde {
 	private List<Rectangle> rectangleBodies;
 
 	public Box2DDebugRenderer debugRenderer;
-	OrthographicCamera cameraDebug = new OrthographicCamera(Parametre.LARGEUR_ECRAN / MULTIPLICATEUR,
+	public OrthographicCamera cameraDebug = new OrthographicCamera(Parametre.LARGEUR_ECRAN / MULTIPLICATEUR,
 			Parametre.HAUTEUR_ECRAN / MULTIPLICATEUR);
 
 	// affichage
-	private SpriteBatch batch;
+	public SpriteBatch batch;
 
 	/**
 	 * correspond à la taille d'un tile. Par défaut, le multiplicateur = 64
@@ -83,8 +83,8 @@ public class Monde {
 		}
 		this.batch.begin();
 		gestionBodies();
-
 		this.batch.end();
+
 		removeDeathEntite(bodiesEntiteVivant);
 		removeDeathEntite(bodiesBullets);
 	}
@@ -134,7 +134,7 @@ public class Monde {
 		return body;
 	}
 
-	private void gestionBodies() {
+	public void gestionBodies() {
 		ArrayList<Body> bodies = bodiesEntiteVivant;
 		for (int i = 0; i < bodies.size(); i++) {
 			final Body body = bodies.get(i);
@@ -160,11 +160,11 @@ public class Monde {
 			}
 		}
 	}
-	
-	public void updateDebugCamera(final Vector2 vec){
-		cameraDebug.position.x = vec.x ;
-		cameraDebug.position.x = vec.y ;
-	
+
+	public void updateDebugCamera(final Vector2 vec) {
+		cameraDebug.position.x = vec.x;
+		cameraDebug.position.y = vec.y;
+		cameraDebug.update();
 	}
 
 	public void removeEntite(final Body body, final ArrayList<Body> arrayBody) {
@@ -245,7 +245,7 @@ public class Monde {
 
 	}
 
-	private void removeDeathEntite(ArrayList<Body> arrayList) {
+	public void removeDeathEntite(ArrayList<Body> arrayList) {
 
 		Entite entite = null;
 

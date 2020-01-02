@@ -1,6 +1,8 @@
 package com.ultraime.explorers.ecran;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.ultraime.game.gdxtraime.composant.Bouton;
 import com.ultraime.game.gdxtraime.ecran.Ecran;
@@ -9,7 +11,7 @@ import com.ultraime.game.gdxtraime.parametrage.Parametre;
 
 /**
  * @author ultraime
- * Ecran de base pour démarrer une partie
+ * Ecran de base pour dï¿½marrer une partie
  */
 public class EcranPrincipal extends Ecran {
 
@@ -38,6 +40,8 @@ public class EcranPrincipal extends Ecran {
 
 	@Override
 	public void render() {
+		Gdx.gl.glClearColor(0, 0, 0, 0);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		this.batch.begin();
 		this.boutonStartPartie.render(batch);
 		this.boutonLoadPartie.render(batch);

@@ -30,7 +30,7 @@ public class EntiteVivante extends Entite implements Serializable {
 	public TypeShape typeShape;
 	public Circle cercleShape;
 	public short idGroup = 0;
-	
+
 	// pour l'animation
 	protected AnimationManager animationManager;
 
@@ -61,7 +61,7 @@ public class EntiteVivante extends Entite implements Serializable {
 	 * @param y
 	 * @param radius
 	 */
-	public EntiteVivante(final float x, final float y, final float radius,final short idDgroupe) {
+	public EntiteVivante(final float x, final float y, final float radius, final short idDgroupe) {
 		super(x, y);
 		this.listeDeNoeudDeplacement = new ArrayDeque<Noeud>();
 		this.listeAction = new ArrayList<ActionEntite>();

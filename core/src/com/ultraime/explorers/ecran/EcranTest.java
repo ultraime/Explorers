@@ -33,7 +33,7 @@ public class EcranTest extends Ecran {
 	public void changerEcran(InputMultiplexer inputMultiplexer) {
 		inputMultiplexer.addProcessor(this);
 		this.cameraGame.camera.position.x = joueurService.bodyJoueur.getPosition().x;
-		this.cameraGame.camera.position.y =joueurService.bodyJoueur.getPosition().y;
+		this.cameraGame.camera.position.y = joueurService.bodyJoueur.getPosition().y;
 	}
 
 	@Override
@@ -60,27 +60,24 @@ public class EcranTest extends Ecran {
 	private void updateCamera() {
 		this.cameraGame.updateCamera();
 		this.cameraGame.camera.position.x = joueurService.bodyJoueur.getPosition().x * 64;
-		this.cameraGame.camera.position.y =joueurService.bodyJoueur.getPosition().y * 64;
+		this.cameraGame.camera.position.y = joueurService.bodyJoueur.getPosition().y * 64;
 		OrthographicCamera camera = this.cameraGame.camera;
 		batch.setProjectionMatrix(camera.combined);
-//		this.mondeService.monde.updateCamera(camera);
-		
+		this.mondeService.monde.updateCamera(camera);
 		this.mondeService.monde.updateDebugCamera(joueurService.bodyJoueur.getPosition());
 	}
 
 	@Override
 	public void render() {
-		updateCamera();
 		if (!isDispose) {
 			this.batch.begin();
-			this.mondeService.monde.render();
-			joueurService.rotation((int) positionSouris.x, (int) positionSouris.y, cameraGame.camera);
+			this.mondeService.render(this.joueurService);
+
 			this.mondeService.monde.renderDebug(cameraGame.camera);
 			this.batch.end();
 		}
+		updateCamera();
 	}
-	
-	
 
 	@Override
 	public void dispose() {
@@ -148,6 +145,7 @@ public class EcranTest extends Ecran {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
+		joueurService.rotation(screenX,  screenY, this.mondeService.monde.cameraDebug);
 		positionSouris.x = screenX;
 		positionSouris.y = screenY;
 		return false;
