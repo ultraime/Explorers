@@ -24,7 +24,7 @@ public class JoueurService {
 		final EntiteJoueur entiteJoueur =  (EntiteJoueur) this.bodyJoueur.getUserData();
 		final float posX =  (bodyJoueur.getPosition().x * Monde.MULTIPLICATEUR) - ( Monde.MULTIPLICATEUR);
 		final float posY = (bodyJoueur.getPosition().y * Monde.MULTIPLICATEUR) - ( Monde.MULTIPLICATEUR);
-		entiteJoueur.render(batch,posX, posY);
+//		entiteJoueur.render(batch,posX, posY);
 //		entiteJoueur.render(batch,100, 100);
 	}
 

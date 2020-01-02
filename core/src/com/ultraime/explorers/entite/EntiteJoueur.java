@@ -14,7 +14,9 @@ public class EntiteJoueur extends EntiteVivante {
 
 	public EntiteJoueur(float x, float y, float radius, short idDgroupe) {
 		super(x, y, radius, idDgroupe);
-		this.animationManager = new AnimationManager(64, 76, 1f, "personnage/humain/astro_test.png");
+		this.animationManager = new AnimationManager(80, 128, 1f, "personnage/humain/astro_test3.png");
+//		this.animationManager = new AnimationManager(64, 128, 1f, "personnage/humain/astro_test2.png");
+//		this.animationManager = new AnimationManager(64, 76, 1f, "personnage/humain/astro_test.png");
 	}
 
 	/**

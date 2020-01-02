@@ -23,7 +23,7 @@ import com.ultraime.game.gdxtraime.entite.EntiteVivante;
 import com.ultraime.game.gdxtraime.parametrage.Parametre;
 
 public class Monde {
-	public static final float STEP_TIME = 1f / 300f;
+	public static final float STEP_TIME = 1f / 60f;
 	public float accumulator = 0;
 	// Le vrai monde, avec les stats normal (petit nombre)
 	public World world;
@@ -139,8 +139,8 @@ public class Monde {
 		for (int i = 0; i < bodies.size(); i++) {
 			final Body body = bodies.get(i);
 			final EntiteVivante entiteVivante = (EntiteVivante) body.getUserData();
-			final float x = body.getPosition().x * MULTIPLICATEUR;
-			final float y = body.getPosition().y * MULTIPLICATEUR;
+			final float x = (body.getPosition().x * MULTIPLICATEUR) - (MULTIPLICATEUR/2);
+			final float y = (body.getPosition().y * MULTIPLICATEUR) - (MULTIPLICATEUR/2);
 			entiteVivante.render(batch, x, y);
 		}
 
