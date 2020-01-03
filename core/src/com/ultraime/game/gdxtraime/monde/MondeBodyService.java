@@ -55,8 +55,8 @@ public class MondeBodyService {
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = circle;
 		fixtureDef.density = 0.5f;
-		fixtureDef.friction = 0.0f;
-		fixtureDef.restitution = 0.0f;
+		fixtureDef.friction = 0.5f;
+		fixtureDef.restitution = 0.5f;
 		fixtureDef.filter.groupIndex = entiteVivante.idGroup;// pour entite a ne pas etre en colli
 		
 		//Ajout de la fixture 1 
@@ -66,20 +66,24 @@ public class MondeBodyService {
 		
 		//body 2
 		CircleShape circle2 = new CircleShape();
-		circle.setRadius(entiteVivante.cercleShape.radius);
-		circle2.setPosition(new Vector2(posX,posY));
+		circle2.setRadius(entiteVivante.cercleShape.radius + 0.1f);
+		circle2.setPosition(new Vector2(posX,posY+0.4f));
 		//fixture du body 2
 		FixtureDef fixtureDef2 = new FixtureDef();
+		fixtureDef2.isSensor = true;
 		fixtureDef2.shape = circle2;
 		fixtureDef2.density = 0.5f;
-		fixtureDef2.friction = 0.0f;
-		fixtureDef2.restitution = 0.0f;
+		fixtureDef2.friction = 0.5f;
+		fixtureDef2.restitution = 0.5f;
 		fixtureDef2.filter.groupIndex = entiteVivante.idGroup;// pour entite a ne pas etre en colli
 		
 		//Ajout de la fixture 12
 		body.createFixture(fixtureDef2);
 		
 		body.setUserData(entiteVivante);
+		
+		circle2.dispose();
+		circle.dispose();
 		return body;
 	}
 

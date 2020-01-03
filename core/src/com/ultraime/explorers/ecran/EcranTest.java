@@ -132,7 +132,7 @@ public class EcranTest extends Ecran {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		joueurService.rotation(screenX, screenY, this.mondeService.monde.cameraDebug);
+//		joueurService.rotation(screenX, screenY, this.mondeService.monde.cameraDebug);
 		positionSouris.x = screenX;
 		positionSouris.y = screenY;
 		return false;
