@@ -1,8 +1,9 @@
 package com.ultraime.game.gdxtraime.monde;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ultraime.game.gdxtraime.parametrage.Parametre;
 
 public class CameraGame {
@@ -14,12 +15,17 @@ public class CameraGame {
 	public static float CAMERA_ZOOM = 1;
 
 	public CameraGame() {
-		this.camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		this.camera = new OrthographicCamera();
+		@SuppressWarnings("unused")
+		final Viewport gamePort = new ExtendViewport(Parametre.LARGEUR_ECRAN, Parametre.HAUTEUR_ECRAN, this.camera);
+		camera.setToOrtho(false);
 	}
 
+	/**
+	 * Monter,descendre,gauche,droite
+	 */
 	public void updateCamera() {
 		camera.update();
-
 		if (isMonter) {
 			if (this.camera.position.y < (Parametre.MONDE_Y * 64) - Parametre.CAMERA_MAX_HAUT * CAMERA_ZOOM) {
 				this.camera.position.y += 10 * CAMERA_ZOOM;
@@ -41,9 +47,6 @@ public class CameraGame {
 				this.camera.position.x += 10 * CAMERA_ZOOM;
 			}
 		}
-
-		// camera.position.y += (int) ((camera.position.x * TILE_SIZE -
-		// mCam.position.y) / 2 + TILE_SIZE / 2) / 8;
 		camera.position.set(Math.round(camera.position.x), Math.round(camera.position.y), 1);
 	}
 

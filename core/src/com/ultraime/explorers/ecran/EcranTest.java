@@ -37,6 +37,7 @@ public class EcranTest extends Ecran {
 
 	@Override
 	public void create(final EcranManagerAbstract ecranManager) {
+		// creation des elements de gestion d'affichage
 		this.ecranManager = (EcranManager) ecranManager;
 		this.positionSouris = new Vector2(0, 0);
 		this.batch = new SpriteBatch();
@@ -44,10 +45,11 @@ public class EcranTest extends Ecran {
 		this.cameraGame.camera.position.x = 0;
 		this.cameraGame.camera.position.y = 0;
 
+		// creatuib du monde
 		this.mondeService = new MondeBaseService();
 
+		// Creation des entites
 		EntiteVivante entiteVivante = new EntiteVivante(0, 0, 0.4f, (short) -1);
-
 		joueurService = new JoueurService(
 				this.mondeService.monde.addEntiteVivante(entiteVivante, this.mondeService.monde.bodiesEntiteVivant));
 
