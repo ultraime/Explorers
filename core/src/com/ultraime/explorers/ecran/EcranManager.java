@@ -15,6 +15,7 @@ public class EcranManager extends EcranManagerAbstract {
 	public EcranPrincipal ecranPrincipal;
 	public EcranTest ecranTest;
 	public EcranHud ecranHud;
+	public EcranTestUI ecranTestUI;
 
 	@Override
 	public void create() {
@@ -23,14 +24,18 @@ public class EcranManager extends EcranManagerAbstract {
 		ecranDebug = new EcranDebug(this);
 
 		ecranPrincipal = new EcranPrincipal();
-		initialiserEcran(ecranPrincipal);
+//		initialiserEcran(ecranPrincipal);
 
 		ecranTest = new EcranTest();
-		ecranActuel.create(this);
+	
 
 		ecranHud = new EcranHud();
 		ecranHud.create(this);
-
+		
+		ecranTestUI = new EcranTestUI();
+		ecranTestUI.create(this);
+		initialiserEcran(ecranTestUI);
+		ecranActuel.create(this);
 	}
 
 	@Override

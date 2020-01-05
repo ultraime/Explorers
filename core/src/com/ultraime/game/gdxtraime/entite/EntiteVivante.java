@@ -60,6 +60,7 @@ public class EntiteVivante extends Entite implements Serializable {
 	 * @param x
 	 * @param y
 	 * @param radius
+	 * @param idDgroupe
 	 */
 	public EntiteVivante(final float x, final float y, final float radius, final short idDgroupe) {
 		super(x, y);

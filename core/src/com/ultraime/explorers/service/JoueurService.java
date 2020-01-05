@@ -1,7 +1,6 @@
 package com.ultraime.explorers.service;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -19,24 +18,25 @@ public class JoueurService {
 		EntiteJoueur entiteJoueur = new EntiteJoueur(bodyJoueur);
 		this.bodyJoueur.setUserData(entiteJoueur);
 	}
-	
-	public void render(SpriteBatch batch) {
-		final EntiteJoueur entiteJoueur =  (EntiteJoueur) this.bodyJoueur.getUserData();
-		final float posX =  (bodyJoueur.getPosition().x * Monde.MULTIPLICATEUR) - ( Monde.MULTIPLICATEUR);
-		final float posY = (bodyJoueur.getPosition().y * Monde.MULTIPLICATEUR) - ( Monde.MULTIPLICATEUR);
-//		entiteJoueur.render(batch,posX, posY);
-//		entiteJoueur.render(batch,100, 100);
-	}
 
-	public void rotation(final int screenX,final int screenY,final OrthographicCamera camera) {
+	public void rotation(final int screenX, final int screenY, final OrthographicCamera camera) {
+		// Vector3 mousePos = new Vector3();
+		// mousePos = new Vector3(screenX, screenY, 0);
+		// camera.unproject(mousePos);
+		// float angle = new Vector2(mousePos.x,
+		// mousePos.y).sub(bodyJoueur.getPosition()).angleRad();
+		// bodyJoueur.setTransform(bodyJoueur.getPosition(), angle);
+
 		Vector3 mousePos = new Vector3();
 		mousePos = new Vector3(screenX, screenY, 0);
 		camera.unproject(mousePos);
-		float angle = new Vector2(mousePos.x, mousePos.y).sub(bodyJoueur.getPosition()).angleRad();
-		bodyJoueur.setTransform(bodyJoueur.getPosition(), angle);
-		
+		final EntiteJoueur entiteJoueur = (EntiteJoueur) bodyJoueur.getUserData();
+
+		float angle = new Vector2(mousePos.x, mousePos.y).sub(entiteJoueur.getAmresPosition()).angleRad();
+		entiteJoueur.rotation(Math.toDegrees(angle));
+
 	}
-	
+
 	public void deplacer(final short directionX, final short directionY) {
 		final EntiteVivante entiteJoueur = (EntiteVivante) bodyJoueur.getUserData();
 		float velocity = entiteJoueur.habiliter.vitesse;
@@ -58,28 +58,31 @@ public class JoueurService {
 
 		bodyJoueur.setLinearVelocity(veloX, veloY);
 	}
-	
 
-	public void shot(final int screenX,final int screenY,final OrthographicCamera camera,final Monde monde) {
-//		Vector2 positionSouris = new Vector2(screenX,screenY);
-		rotation((int) screenX, (int) screenY, monde.cameraDebug);
-		float angle = bodyJoueur.getAngle();
+	public void shot(final int screenX, final int screenY, final OrthographicCamera camera, final Monde monde) {
+		Vector3 mousePos = new Vector3();
+		mousePos = new Vector3(screenX, screenY, 0);
+		camera.unproject(mousePos);
+		final EntiteJoueur entiteJoueur = (EntiteJoueur) bodyJoueur.getUserData();
+
+		float angle = new Vector2(mousePos.x, mousePos.y).sub(entiteJoueur.getAmresPosition()).angleRad();
+		entiteJoueur.rotation(Math.toDegrees(angle));
 		
 		float velocity = 10f;
 
-		float velX = MathUtils.cos(angle) * velocity; // X-component.
+		final Vector2 decalage = entiteJoueur.getArmeDecalage();
+		float posX = bodyJoueur.getPosition().x + decalage.x;
+		float posY = bodyJoueur.getPosition().y + decalage.y; //+0.5
+		float velX = MathUtils.cos(angle) * velocity;
 		float velY = MathUtils.sin(angle) * velocity;
-
-		float posX = bodyJoueur.getPosition().x; // X-component.
-		float posY = bodyJoueur.getPosition().y;
-
+//		posX + 10, posY + 35
+		
 		EntiteVivante bullet = new EntiteVivante(posX, posY, 0.04f, (short) -1);
 		Body body = monde.addEntiteVivante(bullet, monde.bodiesBullets);
 		body.setBullet(true);
 		body.setLinearVelocity(velX, velY);
-		
+//		System.err.println(Math.toDegrees(angle));
+
 	}
-
-
 
 }

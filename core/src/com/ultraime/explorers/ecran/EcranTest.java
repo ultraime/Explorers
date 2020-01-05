@@ -11,6 +11,8 @@ import com.ultraime.game.gdxtraime.ecran.Ecran;
 import com.ultraime.game.gdxtraime.ecran.EcranManagerAbstract;
 import com.ultraime.game.gdxtraime.entite.EntiteVivante;
 import com.ultraime.game.gdxtraime.monde.CameraGame;
+import com.ultraime.game.gdxtraime.monde.Monde;
+import com.ultraime.game.gdxtraime.parametrage.Parametre;
 
 /**
  * @author ultraime Ecran pour des test
@@ -41,7 +43,7 @@ public class EcranTest extends Ecran {
 		this.ecranManager = (EcranManager) ecranManager;
 		this.positionSouris = new Vector2(0, 0);
 		this.batch = new SpriteBatch();
-		this.cameraGame = new CameraGame();
+		this.cameraGame = new CameraGame(Parametre.LARGEUR_ECRAN, Parametre.HAUTEUR_ECRAN);
 		this.cameraGame.camera.position.x = 0;
 		this.cameraGame.camera.position.y = 0;
 
@@ -49,12 +51,21 @@ public class EcranTest extends Ecran {
 		this.mondeService = new MondeBaseService();
 
 		// Creation des entites
-		EntiteVivante entiteVivante = new EntiteVivante(0, 0, 0.4f, (short) -1);
+		Vector2 position = this.mondeService.monde.carte.recupererPositionDepart("event", "centre");
+		
+		EntiteVivante entiteVivante = new EntiteVivante(position.x/Monde.MULTIPLICATEUR, position.y/Monde.MULTIPLICATEUR, 0.4f, (short) -1);
 		joueurService = new JoueurService(
-				this.mondeService.monde.addEntiteVivante(entiteVivante, this.mondeService.monde.bodiesEntiteVivant));
+				this.mondeService.monde.addPersonnageMuscle(entiteVivante));
 
 		EntiteVivante entiteEnemie = new EntiteVivante(2, 0, 0.4f, (short) -2);
 		bodyEnemie = this.mondeService.monde.addEntiteVivante(entiteEnemie, this.mondeService.monde.bodiesEntiteVivant);
+		
+		
+		//creations des murs.
+		this.mondeService.initialiserCollision();
+//		TiledMapTileLayer murs = this.mondeService.monde.carte.getLayers("mur");
+		
+		
 
 	}
 
@@ -132,6 +143,7 @@ public class EcranTest extends Ecran {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
+		joueurService.rotation(screenX, screenY,cameraGame.camera);
 //		joueurService.rotation(screenX, screenY, this.mondeService.monde.cameraDebug);
 		positionSouris.x = screenX;
 		positionSouris.y = screenY;
@@ -141,6 +153,7 @@ public class EcranTest extends Ecran {
 	@Override
 	public boolean scrolled(int amount) {
 		this.cameraGame.zoom(amount);
+		this.mondeService.monde.zoomCameraDebug(amount);;
 		return false;
 	}
 

@@ -6,6 +6,7 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -39,9 +40,11 @@ public class Monde {
 	private List<Rectangle> rectangleBodies;
 
 	public Box2DDebugRenderer debugRenderer;
+//	public CameraGame cameraDebug = new CameraGame(Parametre.LARGEUR_ECRAN / MULTIPLICATEUR,
+//			Parametre.HAUTEUR_ECRAN / MULTIPLICATEUR);
 	public OrthographicCamera cameraDebug = new OrthographicCamera(Parametre.LARGEUR_ECRAN / MULTIPLICATEUR,
 			Parametre.HAUTEUR_ECRAN / MULTIPLICATEUR);
-
+	public static float CAMERA_ZOOM = 1;
 	// affichage
 	public SpriteBatch batch;
 
@@ -134,27 +137,32 @@ public class Monde {
 		return body;
 	}
 
+	public Body addPersonnageMuscle(final EntiteVivante entiteVivante) {
+		Body body = MondeBodyService.creerPersonnageMuscle(world, entiteVivante);
+		bodiesEntiteVivant.add(body);
+		return body;
+	}
+
 	public void gestionBodies() {
 		ArrayList<Body> bodies = bodiesEntiteVivant;
 		for (int i = 0; i < bodies.size(); i++) {
 			final Body body = bodies.get(i);
 			final EntiteVivante entiteVivante = (EntiteVivante) body.getUserData();
-			final float x = (body.getPosition().x * MULTIPLICATEUR) - (MULTIPLICATEUR/2);
-			final float y = (body.getPosition().y * MULTIPLICATEUR) - (MULTIPLICATEUR/2);
+			final float x = (body.getPosition().x * MULTIPLICATEUR) - (MULTIPLICATEUR / 2);
+			final float y = (body.getPosition().y * MULTIPLICATEUR) - (MULTIPLICATEUR / 2);
 			entiteVivante.render(batch, x, y);
 		}
 
 	}
 
 	/**
-	 * @param OrthographicCamera camera
+	 * @param OrthographicCamera
+	 *            camera
 	 */
 	public void renderDebug(final OrthographicCamera camera) {
 		if (Parametre.MODE_DEBUG) {
 			try {
-				cameraDebug.position.x = 1000;
 				this.debugRenderer.render(world, cameraDebug.combined);
-				// this.debugRenderer.render(worldAffichage, camera.combined);
 			} catch (IllegalStateException e) {
 				e.printStackTrace();
 			}
@@ -165,6 +173,22 @@ public class Monde {
 		cameraDebug.position.x = vec.x;
 		cameraDebug.position.y = vec.y;
 		cameraDebug.update();
+	}
+	public void zoomCameraDebug(int amount) {
+		float testValidite = 0;
+		if (amount < 0) {
+			testValidite = CAMERA_ZOOM - 0.2f;
+			if (testValidite >= 0.2f) {// 0.6f
+				CAMERA_ZOOM = CAMERA_ZOOM - 0.2f;
+			}
+		} else {
+			testValidite = CAMERA_ZOOM + 0.2f;
+			if (testValidite < 5f) {
+				CAMERA_ZOOM = CAMERA_ZOOM + 0.2f;
+			}
+		}
+		cameraDebug.zoom = MathUtils.round(10f * CAMERA_ZOOM) / 10f;
+
 	}
 
 	public void removeEntite(final Body body, final ArrayList<Body> arrayBody) {

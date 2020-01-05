@@ -1,6 +1,8 @@
 package com.ultraime.explorers.service;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -8,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.ultraime.game.gdxtraime.carte.Carte;
 import com.ultraime.game.gdxtraime.entite.Entite;
+import com.ultraime.game.gdxtraime.entite.EntiteStatic;
 import com.ultraime.game.gdxtraime.monde.CameraGame;
 import com.ultraime.game.gdxtraime.monde.Monde;
 import com.ultraime.game.gdxtraime.parametrage.Parametre;
@@ -36,7 +39,7 @@ public class MondeBaseService {
 					Entite e = (Entite) fixtureB.getBody().getUserData();
 					e.isDeleted = true;
 				}
-
+				
 			}
 
 			@Override
@@ -55,7 +58,26 @@ public class MondeBaseService {
 
 		});
 	}
+	public void initialiserCollision() {
+		final TiledMapTileLayer layer = monde.carte.getLayers("mur");
+		for (int x = 0; x < layer.getWidth(); x++) {
+			for (int y = 0; y < layer.getHeight(); y++) {
+				final Cell cell = layer.getCell(x, y);
+				if (cell != null && cell.getTile() != null) {
+					float largeur = 1f;
+					float longueur = 1f;
+					float posX = x+ 0.5f;
+					float posY = y+ 0.5f;
+					EntiteStatic entiteStatic = new EntiteStatic(posX, posY, largeur, longueur);
+					monde.addEntiteStatic(entiteStatic);
 
+				}
+			}
+		}
+	}
+	
+	
+	
 	/**
 	 * @param joueurService
 	 * @param cameraGame
@@ -75,7 +97,6 @@ public class MondeBaseService {
 			}
 		}
 		this.monde.batch.begin();
-		joueurService.render(this.monde.batch);
 		this.monde.gestionBodies();
 		this.monde.batch.end();
 

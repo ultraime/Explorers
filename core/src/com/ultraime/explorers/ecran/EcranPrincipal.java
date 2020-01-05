@@ -78,7 +78,9 @@ public class EcranPrincipal extends Ecran {
 
 		if (this.boutonStartPartie.isClique(screenX, screenY)) {
 			this.ecranManager.ecranTest.create(this.ecranManager);
+			//TODO charger ecran de jeu
 			this.ecranManager.initialiserEcran(this.ecranManager.ecranTest);
+//			this.ecranManager.initialiserEcran(this.ecranManager.ecranTestUI);
 		}
 		this.boutonLoadPartie.isClique(screenX, screenY);
 

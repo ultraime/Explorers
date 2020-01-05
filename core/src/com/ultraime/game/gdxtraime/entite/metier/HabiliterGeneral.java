@@ -14,6 +14,8 @@ public class HabiliterGeneral implements Serializable {
 
 	// stat de base
 	public float vitesse = 5f;// 3f
+	//100f => 30sec pour la carte
+	//5f c'est 20*30 soit 600sec ?
 	public float acceleration = 10f;
 	public float saut = 270f;
 	public int sante[];

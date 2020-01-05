@@ -14,10 +14,10 @@ public class CameraGame {
 	public boolean isDroite = false;
 	public static float CAMERA_ZOOM = 1;
 
-	public CameraGame() {
+	public CameraGame(final float largeur,final float hauteur) {
 		this.camera = new OrthographicCamera();
 		@SuppressWarnings("unused")
-		final Viewport gamePort = new ExtendViewport(Parametre.LARGEUR_ECRAN, Parametre.HAUTEUR_ECRAN, this.camera);
+		final Viewport gamePort = new ExtendViewport(largeur,hauteur, this.camera);
 		camera.setToOrtho(false);
 	}
 
