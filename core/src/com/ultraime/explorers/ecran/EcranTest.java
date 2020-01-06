@@ -51,20 +51,16 @@ public class EcranTest extends Ecran {
 		// creatuib du monde
 		this.mondeService = new MondeBaseService();
 
+		
+		//creations des murs.
+		this.mondeService.initialiserCollision();
+		
 		// Creation des entites
 		Vector2 position = this.mondeService.monde.carte.recupererPositionDepart("event", "centre");
 		
 		EntiteVivante entiteVivante = new EntiteVivante(position.x/Monde.MULTIPLICATEUR, position.y/Monde.MULTIPLICATEUR, 0.4f, (short) -1);
 		joueurService = new JoueurService(
 				this.mondeService.monde.addPersonnageMuscle(entiteVivante));
-
-		EntiteVivante entiteEnemie = new EntiteVivante(2, 0, 0.4f, (short) -2);
-		bodyEnemie = this.mondeService.monde.addEntiteVivante(entiteEnemie, this.mondeService.monde.bodiesEntiteVivant);
-		
-		
-		//creations des murs.
-		this.mondeService.initialiserCollision();
-
 		
 		//Creation des enemies
 		EntiteAlien alien = new EntiteAlien((position.x/Monde.MULTIPLICATEUR)-5, position.y/Monde.MULTIPLICATEUR, 0.4f, (short) -10);

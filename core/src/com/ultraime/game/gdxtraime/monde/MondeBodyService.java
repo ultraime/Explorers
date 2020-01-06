@@ -63,7 +63,9 @@ public class MondeBodyService {
 		fixtureDef.density = 0.5f;
 		fixtureDef.friction = 0.5f;
 		fixtureDef.restitution = 0.5f;
-		fixtureDef.filter.groupIndex = entiteVivante.idGroup;// pour entite a ne pas etre en colli
+		fixtureDef.filter.groupIndex = entiteVivante.idGroup;// pour entite a ne
+																// pas etre en
+																// colli
 
 		// Ajout de la fixture 1
 		body.createFixture(fixtureDef);
@@ -89,11 +91,11 @@ public class MondeBodyService {
 		Body body = world.createBody(bodyDef);
 		CircleShape circle = new CircleShape();
 		circle.setRadius(entiteVivante.cercleShape.radius);
-		
-		// fixture du body 1
-		//FixtureDef fixtureDef = creerFixtureDef(0.5f,0.5f,0,circle,entiteVivante.idGroup);
-		FixtureDef fixtureDef = creerFixtureDef(0.5f,0.5f,0,circle,entiteVivante.idGroup);
 
+		// fixture du body 1
+		// FixtureDef fixtureDef =
+		// creerFixtureDef(0.5f,0.5f,0,circle,entiteVivante.idGroup);
+		final FixtureDef fixtureDef = creerFixtureDef(0.5f, 0.5f, 0.5f, circle, entiteVivante.idGroup, false);
 		// Ajout de la fixture 1
 		body.createFixture(fixtureDef);
 
@@ -101,8 +103,8 @@ public class MondeBodyService {
 		CircleShape circle2 = new CircleShape();
 		circle2.setRadius(entiteVivante.cercleShape.radius + 0.1f);
 		circle2.setPosition(new Vector2(0, 0.4f));
-		FixtureDef fixtureDef2 = creerFixtureDef(0,0,0,circle2,entiteVivante.idGroup);
-		//FixtureDef fixtureDef2 = creerFixtureDef(entiteVivante, circle2);
+		final FixtureDef fixtureDef2 = creerFixtureDef(0, 0, 0, circle2, entiteVivante.idGroup, true);
+		// FixtureDef fixtureDef2 = creerFixtureDef(entiteVivante, circle2);
 
 		// Ajout de la fixture 12
 		body.createFixture(fixtureDef2);
@@ -112,8 +114,7 @@ public class MondeBodyService {
 		circle3.setRadius(entiteVivante.cercleShape.radius - 0.1f);
 		circle3.setPosition(new Vector2(0, 0.4f + 0.6f));
 		// fixture 3
-		FixtureDef fixtureDef3 = creerFixtureDef(0,0,0,circle2,entiteVivante.idGroup);
-
+		final FixtureDef fixtureDef3 = creerFixtureDef(0, 0, 0, circle2, entiteVivante.idGroup, true);
 		// Ajout de la fixture 12
 		body.createFixture(fixtureDef3);
 
@@ -131,64 +132,28 @@ public class MondeBodyService {
 	 * @return
 	 */
 	public static Body creerAlienMuscle(World world, final EntiteVivante entiteVivante) {
-		final float posX = entiteVivante.x;
-		final float posY = entiteVivante.y;
-
-		// body 1
-		BodyDef bodyDef = new BodyDef();
-		bodyDef.type = BodyType.DynamicBody;
-		bodyDef.position.set(posX, posY);
-		Body body = world.createBody(bodyDef);
-		CircleShape circle = new CircleShape();
-		circle.setRadius(entiteVivante.cercleShape.radius);
-		// fixture du body 1
-		FixtureDef fixtureDef = creerFixtureDef(0.5f,0.5f,0,circle,entiteVivante.idGroup);
-
-		// Ajout de la fixture 1
-		body.createFixture(fixtureDef);
-
-		// circle2 2
-		CircleShape circle2 = new CircleShape();
-		circle2.setRadius(entiteVivante.cercleShape.radius + 0.1f);
-		circle2.setPosition(new Vector2(0, 0.4f));
-		// fixture 2
-		FixtureDef fixtureDef2 = creerFixtureDef(0,0,0,circle2,entiteVivante.idGroup);
-		//FixtureDef fixtureDef2 = creerFixtureDef(entiteVivante, circle2);// pour entite a ne pas etre en colli
-		// Ajout de la fixture 12
-		body.createFixture(fixtureDef2);
-
-		// circle 3
-		CircleShape circle3 = new CircleShape();
-		circle3.setRadius(entiteVivante.cercleShape.radius - 0.1f);
-		circle3.setPosition(new Vector2(0, 0.4f + 0.6f));
-		// fixture 3
-		FixtureDef fixtureDef3 = creerFixtureDef(0,0,0,circle2,entiteVivante.idGroup);
-
-		// Ajout de la fixture 3
-		body.createFixture(fixtureDef3);
-
+		Body body = creerPersonnageMuscle(world, entiteVivante);
 		// zone de recherche
-		CircleShape circle4 = new CircleShape();
-		circle4.setRadius(entiteVivante.cercleShape.radius - 0.1f);
-		circle4.setPosition(new Vector2(0, 0.4f + 0.6f));
+		// CircleShape circle4 = new CircleShape();
+		// circle4.setRadius(entiteVivante.cercleShape.radius - 0.1f);
+		// circle4.setPosition(new Vector2(0, 0.4f + 0.6f));
+
 		// fixture 4
-		FixtureDef fixtureDef4 = creerFixtureDef(0,0,0,circle2,ZONE_DETECTION_ALIEN);
+		// FixtureDef fixtureDef4 =
+		// creerFixtureDef(0,0,0,circle2,ZONE_DETECTION_ALIEN);
 
-		// Ajout de la fixture 3
-		body.createFixture(fixtureDef4);
-
+		// Ajout de la fixture 4
+		// body.createFixture(fixtureDef4);
 		body.setFixedRotation(true);
 		body.setUserData(entiteVivante);
-		circle4.dispose();
-		circle2.dispose();
-		circle.dispose();
+		// circle4.dispose();
 		return body;
 	}
 
 	private static FixtureDef creerFixtureDef(final float density, final float friction, final float restitution,
-			final CircleShape circle, final short group) {
-		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.isSensor = true;
+			final CircleShape circle, short group, boolean isSensor) {
+		final FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.isSensor = isSensor;
 		fixtureDef.shape = circle;
 		fixtureDef.density = density;
 		fixtureDef.friction = friction;
@@ -212,7 +177,9 @@ public class MondeBodyService {
 		// pour le rebond
 		fixtureDef.friction = 0.0f;
 		fixtureDef.restitution = 0.0f;
-		fixtureDef.filter.groupIndex = entiteVivante.idGroup;// pour entite a ne pas etre en colli
+		fixtureDef.filter.groupIndex = entiteVivante.idGroup;// pour entite a ne
+																// pas etre en
+																// colli
 		body.createFixture(fixtureDef);
 		body.setUserData(entiteVivante);
 		return body;
