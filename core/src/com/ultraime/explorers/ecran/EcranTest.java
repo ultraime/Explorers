@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.ultraime.explorers.entite.EntiteAlien;
 import com.ultraime.explorers.service.JoueurService;
 import com.ultraime.explorers.service.MondeBaseService;
 import com.ultraime.game.gdxtraime.ecran.Ecran;
@@ -63,9 +64,11 @@ public class EcranTest extends Ecran {
 		
 		//creations des murs.
 		this.mondeService.initialiserCollision();
-//		TiledMapTileLayer murs = this.mondeService.monde.carte.getLayers("mur");
+
 		
-		
+		//Creation des enemies
+		EntiteAlien alien = new EntiteAlien((position.x/Monde.MULTIPLICATEUR)-5, position.y/Monde.MULTIPLICATEUR, 0.4f, (short) -10);
+		this.mondeService.monde.addPAlienMuscle(alien);
 
 	}
 

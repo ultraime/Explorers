@@ -142,6 +142,13 @@ public class Monde {
 		bodiesEntiteVivant.add(body);
 		return body;
 	}
+	
+	public Body addPAlienMuscle(final EntiteVivante entiteVivante) {
+		Body body = MondeBodyService.creerAlienMuscle(world, entiteVivante);
+		bodiesEntiteVivant.add(body);
+		return body;
+	}
+	
 
 	public void gestionBodies() {
 		ArrayList<Body> bodies = bodiesEntiteVivant;

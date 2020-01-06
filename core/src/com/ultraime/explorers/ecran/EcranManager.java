@@ -2,7 +2,6 @@ package com.ultraime.explorers.ecran;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.ultraime.game.gdxtraime.ecran.Ecran;
 import com.ultraime.game.gdxtraime.ecran.EcranDebug;
 import com.ultraime.game.gdxtraime.ecran.EcranManagerAbstract;
 import com.ultraime.game.gdxtraime.parametrage.Parametre;
@@ -27,14 +26,15 @@ public class EcranManager extends EcranManagerAbstract {
 //		initialiserEcran(ecranPrincipal);
 
 		ecranTest = new EcranTest();
-	
+//		ecranTest.create(this);
 
 		ecranHud = new EcranHud();
 		ecranHud.create(this);
-		
+
 		ecranTestUI = new EcranTestUI();
 		ecranTestUI.create(this);
-		initialiserEcran(ecranTestUI);
+
+		initialiserEcran(ecranPrincipal);
 		ecranActuel.create(this);
 	}
 
