@@ -1,8 +1,11 @@
 package com.ultraime.explorers.ecran;
 
+import java.util.List;
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.ultraime.explorers.entite.EntiteAlien;
@@ -65,6 +68,13 @@ public class EcranTest extends Ecran {
 		//Creation des enemies
 		EntiteAlien alien = new EntiteAlien((position.x/Monde.MULTIPLICATEUR)-5, position.y/Monde.MULTIPLICATEUR, 0.4f, (short) -10);
 		this.mondeService.monde.addPAlienMuscle(alien);
+		
+		//creation des portes et interrupteur.
+		List<MapObject> eventInterupteur = this.mondeService.monde.carte.recupererEvents("event", "interrupteur");
+		List<MapObject> eventPorte = this.mondeService.monde.carte.recupererEvents("event", "porte");
+		
+		this.mondeService.creerPorte(eventInterupteur,eventPorte);
+
 
 	}
 

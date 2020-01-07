@@ -1,5 +1,8 @@
 package com.ultraime.game.gdxtraime.carte;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -8,6 +11,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+
 //BatchTiledMapRenderer
 public class Carte {
 
@@ -35,7 +39,7 @@ public class Carte {
 
 	/**
 	 * @param LayerPosition
-	 * @param String        depart (nom de l'objet dans tilemap)
+	 * @param String depart (nom de l'objet dans tilemap)
 	 * @return Vector2 posDepart
 	 */
 	public Vector2 recupererPositionDepart(String LayerPosition, String depart) {
@@ -48,6 +52,17 @@ public class Carte {
 			}
 		}
 		return posDepart;
+	}
+
+	public List<MapObject> recupererEvents(String LayerPosition, String event) {
+		List<MapObject> listEvent = new ArrayList<MapObject>();
+
+		for (MapObject object : tiledMap.getLayers().get(LayerPosition).getObjects()) {
+			if (object.getName().equals(event)) {
+				listEvent.add(object);
+			}
+		}
+		return listEvent;
 	}
 
 	public void render() {

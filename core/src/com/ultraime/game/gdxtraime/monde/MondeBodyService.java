@@ -5,9 +5,11 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.ultraime.game.gdxtraime.Evenement.Evenement;
 import com.ultraime.game.gdxtraime.entite.EntiteVivante;
 
 /**
@@ -183,5 +185,18 @@ public class MondeBodyService {
 		body.createFixture(fixtureDef);
 		body.setUserData(entiteVivante);
 		return body;
+	}
+
+	public static Body creerEvent(final World world, final Evenement event) {
+		BodyDef groundBodyDef = new BodyDef();
+		groundBodyDef.position.set(event.position);
+		Body groundBody = world.createBody(groundBodyDef);
+
+		PolygonShape groundBox = new PolygonShape();
+		groundBox.setAsBox(event.largeur / 2, event.hauteur / 2);
+		Fixture fixture = groundBody.createFixture(groundBox, 0.0f);
+		fixture.setSensor(true);
+		groundBody.setUserData(event);
+		return groundBody;
 	}
 }

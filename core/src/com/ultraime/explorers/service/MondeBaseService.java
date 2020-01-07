@@ -1,18 +1,25 @@
 package com.ultraime.explorers.service;
 
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.ultraime.explorers.Evenement.Interrupteur;
+import com.ultraime.game.gdxtraime.Evenement.Evenement;
 import com.ultraime.game.gdxtraime.carte.Carte;
 import com.ultraime.game.gdxtraime.entite.Entite;
 import com.ultraime.game.gdxtraime.entite.EntiteStatic;
 import com.ultraime.game.gdxtraime.monde.CameraGame;
 import com.ultraime.game.gdxtraime.monde.Monde;
+import com.ultraime.game.gdxtraime.monde.MondeBodyService;
 import com.ultraime.game.gdxtraime.parametrage.Parametre;
 
 public class MondeBaseService {
@@ -31,15 +38,22 @@ public class MondeBaseService {
 			public void beginContact(Contact contact) {
 				Fixture fixtureA = contact.getFixtureA();
 				Fixture fixtureB = contact.getFixtureB();
+				contactBullets(fixtureA, fixtureB);
 
+			}
+
+			private void contactBullets(Fixture fixtureA, Fixture fixtureB) {
 				if (monde.bodiesBullets.contains(fixtureA.getBody())) {
-					Entite e = (Entite) fixtureB.getBody().getUserData();
-					e.isDeleted = true;
+					if (!(fixtureB.getBody().getUserData() instanceof Evenement)) {
+						Entite e = (Entite) fixtureB.getBody().getUserData();
+						e.isDeleted = true;
+					}
 				} else if (monde.bodiesBullets.contains(fixtureB.getBody())) {
-					Entite e = (Entite) fixtureB.getBody().getUserData();
-					e.isDeleted = true;
+					if (!(fixtureA.getBody().getUserData() instanceof Evenement)) {
+						Entite e = (Entite) fixtureB.getBody().getUserData();
+						e.isDeleted = true;
+					}
 				}
-				
 			}
 
 			@Override
@@ -58,6 +72,7 @@ public class MondeBaseService {
 
 		});
 	}
+
 	public void initialiserCollision() {
 		final TiledMapTileLayer layer = monde.carte.getLayers("mur");
 		for (int x = 0; x < layer.getWidth(); x++) {
@@ -66,8 +81,8 @@ public class MondeBaseService {
 				if (cell != null && cell.getTile() != null) {
 					float largeur = 1f;
 					float longueur = 1f;
-					float posX = x+ 0.5f;
-					float posY = y+ 0.5f;
+					float posX = x + 0.5f;
+					float posY = y + 0.5f;
 					EntiteStatic entiteStatic = new EntiteStatic(posX, posY, largeur, longueur);
 					monde.addEntiteStatic(entiteStatic);
 
@@ -75,9 +90,7 @@ public class MondeBaseService {
 			}
 		}
 	}
-	
-	
-	
+
 	/**
 	 * @param joueurService
 	 * @param cameraGame
@@ -114,6 +127,20 @@ public class MondeBaseService {
 		cameraGame.camera.update();
 		monde.updateCamera(cameraGame.camera);
 		monde.updateDebugCamera(joueurService.bodyJoueur.getPosition());
+	}
+
+	public void creerPorte(List<MapObject> eventInterupteur, List<MapObject> eventPorte) {
+		for (MapObject object : eventInterupteur) {
+			final float posX = (Float) object.getProperties().get("x") / Monde.MULTIPLICATEUR;
+			final float posY = (Float) object.getProperties().get("y") / Monde.MULTIPLICATEUR;
+			final Vector2 position = new Vector2(posX + 0.5f, posY + 0.5f);
+			final float longueur = (Float) object.getProperties().get("width") / Monde.MULTIPLICATEUR;
+			final float hauteur = (Float) object.getProperties().get("height") / Monde.MULTIPLICATEUR;
+
+			Interrupteur interrupteur = new Interrupteur(position, longueur, hauteur);
+			MondeBodyService.creerEvent(this.monde.world, interrupteur);
+		}
+
 	}
 
 }
