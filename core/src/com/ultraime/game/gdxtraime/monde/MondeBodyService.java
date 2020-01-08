@@ -189,11 +189,12 @@ public class MondeBodyService {
 
 	public static Body creerEvent(final World world, final Evenement event) {
 		BodyDef groundBodyDef = new BodyDef();
-		final Vector2 position = new Vector2(event.position.x/ Monde.MULTIPLICATEUR, event.position.y/ Monde.MULTIPLICATEUR);
+		final Vector2 position = new Vector2(event.position.x/ Monde.MULTIPLICATEUR +0.5f, event.position.y/ Monde.MULTIPLICATEUR + 0.5f);
 		groundBodyDef.position.set(position);
 		Body groundBody = world.createBody(groundBodyDef);
 
 		PolygonShape groundBox = new PolygonShape();
+//		groundBox.setAsBox(0.5f,1f);
 		groundBox.setAsBox((event.largeur/ Monde.MULTIPLICATEUR) / 2,( event.hauteur/ Monde.MULTIPLICATEUR) / 2);
 		Fixture fixture = groundBody.createFixture(groundBox, 0.0f);
 		fixture.setSensor(true);

@@ -131,13 +131,23 @@ public class MondeBaseService {
 
 	public void creerPorte(List<MapObject> eventInterupteur, List<MapObject> eventPorte) {
 		for (MapObject object : eventInterupteur) {
-			final float posX = (Float) object.getProperties().get("x") + Monde.MULTIPLICATEUR/2;
-			final float posY = (Float) object.getProperties().get("y")  + Monde.MULTIPLICATEUR/2;
-			final Vector2 position = new Vector2(posX , posY );
-			final float longueur = (Float) object.getProperties().get("width") ;
-			final float hauteur = (Float) object.getProperties().get("height") ;
+			 float posX = (Float) object.getProperties().get("x");
+			 float posY = (Float) object.getProperties().get("y");
+
+			// decalage.
+			final String direction = (String) object.getProperties().get("direction");
+			if (direction.equals("long")) {
+				posX = posX + Monde.MULTIPLICATEUR/2;
+			}else{
+				posY = posY + Monde.MULTIPLICATEUR/2;
+			}
+
+			final Vector2 position = new Vector2(posX, posY);
+			final float longueur = (Float) object.getProperties().get("width");
+			final float hauteur = (Float) object.getProperties().get("height");
 
 			Interrupteur interrupteur = new Interrupteur(position, longueur, hauteur);
+
 			MondeBodyService.creerEvent(this.monde.world, interrupteur);
 		}
 
