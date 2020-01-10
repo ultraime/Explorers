@@ -17,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.ultraime.game.gdxtraime.Evenement.Evenement;
 import com.ultraime.game.gdxtraime.carte.Carte;
 import com.ultraime.game.gdxtraime.entite.Entite;
 import com.ultraime.game.gdxtraime.entite.EntiteStatic;
@@ -38,7 +39,10 @@ public class Monde {
 	public ArrayList<Body> bodiesBullets = new ArrayList<Body>();
 	// les entites static sont une liste de body + rectangle
 	private List<Rectangle> rectangleBodies;
-
+	
+	//event du monde
+	public List<Evenement> evenements = new ArrayList<Evenement>();
+	
 	public Box2DDebugRenderer debugRenderer;
 //	public CameraGame cameraDebug = new CameraGame(Parametre.LARGEUR_ECRAN / MULTIPLICATEUR,
 //			Parametre.HAUTEUR_ECRAN / MULTIPLICATEUR);
@@ -90,6 +94,9 @@ public class Monde {
 
 		removeDeathEntite(bodiesEntiteVivant);
 		removeDeathEntite(bodiesBullets);
+	}
+	public void renderEvent() {
+		evenements.forEach(item->item.render(batch));
 	}
 
 	public Body recupererBodyFromEntite(final EntiteVivante entiteVivante) {
@@ -290,4 +297,6 @@ public class Monde {
 		}
 
 	}
+
+
 }

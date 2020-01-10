@@ -7,12 +7,14 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.ultraime.explorers.Evenement.Interrupteur;
+import com.ultraime.explorers.entite.EntiteJoueur;
 import com.ultraime.game.gdxtraime.Evenement.Evenement;
 import com.ultraime.game.gdxtraime.carte.Carte;
 import com.ultraime.game.gdxtraime.entite.Entite;
@@ -38,11 +40,44 @@ public class MondeBaseService {
 			public void beginContact(Contact contact) {
 				Fixture fixtureA = contact.getFixtureA();
 				Fixture fixtureB = contact.getFixtureB();
-				contactBullets(fixtureA, fixtureB);
+				boolean isContact = contactJoueurEvent(fixtureA, fixtureB);
+				if (!isContact) {
+					contactBullets(fixtureA, fixtureB);
+				}
 
 			}
 
-			private void contactBullets(Fixture fixtureA, Fixture fixtureB) {
+			private boolean contactJoueurEvent(final Fixture fixtureA, final Fixture fixtureB) {
+				boolean isContact = false;
+				final Body bodyA = fixtureA.getBody();
+				final Body bodyB = fixtureB.getBody();
+
+				EntiteJoueur entiteJoueur = null;
+				Object objEvent = null;
+				// recuperation des datas
+				if (bodyA.getUserData() instanceof EntiteJoueur) {
+					entiteJoueur = (EntiteJoueur) bodyA.getUserData();
+					if (bodyB.getUserData() instanceof Evenement) {
+						objEvent = bodyB.getUserData();
+					}
+				} else if (bodyB.getUserData() instanceof EntiteJoueur)
+					entiteJoueur = (EntiteJoueur) bodyB.getUserData();
+				if (bodyA.getUserData() instanceof Evenement) {
+					objEvent = bodyA.getUserData();
+				}
+				// regle metier
+				if (entiteJoueur != null && objEvent != null) {
+					if (objEvent instanceof Interrupteur) {
+						final Interrupteur interrupteur = (Interrupteur) objEvent;
+						interrupteur.showTouchEvent = true;
+						isContact = true;
+					}
+				}
+				return isContact;
+
+			}
+
+			private void contactBullets(final Fixture fixtureA, final Fixture fixtureB) {
 				if (monde.bodiesBullets.contains(fixtureA.getBody())) {
 					if (!(fixtureB.getBody().getUserData() instanceof Evenement)) {
 						Entite e = (Entite) fixtureB.getBody().getUserData();
@@ -58,8 +93,36 @@ public class MondeBaseService {
 
 			@Override
 			public void endContact(Contact contact) {
-				// Fixture fixtureA = contact.getFixtureA();
-				// Fixture fixtureB = contact.getFixtureB();
+				Fixture fixtureA = contact.getFixtureA();
+				Fixture fixtureB = contact.getFixtureB();
+				endContactJoueurEvent(fixtureA, fixtureB);
+			}
+
+			private void endContactJoueurEvent(final Fixture fixtureA, final Fixture fixtureB) {
+				final Body bodyA = fixtureA.getBody();
+				final Body bodyB = fixtureB.getBody();
+
+				EntiteJoueur entiteJoueur = null;
+				Object objEvent = null;
+				// recuperation des datas
+				if (bodyA.getUserData() instanceof EntiteJoueur) {
+					entiteJoueur = (EntiteJoueur) bodyA.getUserData();
+					if (bodyB.getUserData() instanceof Evenement) {
+						objEvent = bodyB.getUserData();
+					}
+				} else if (bodyB.getUserData() instanceof EntiteJoueur)
+					entiteJoueur = (EntiteJoueur) bodyB.getUserData();
+				if (bodyA.getUserData() instanceof Evenement) {
+					objEvent = bodyA.getUserData();
+				}
+				//
+				if (entiteJoueur != null && objEvent != null) {
+					if (objEvent instanceof Interrupteur) {
+						final Interrupteur interrupteur = (Interrupteur) objEvent;
+						interrupteur.showTouchEvent = false;
+					}
+				}
+
 			}
 
 			@Override
@@ -111,6 +174,7 @@ public class MondeBaseService {
 		}
 		this.monde.batch.begin();
 		this.monde.gestionBodies();
+		this.monde.renderEvent();
 		this.monde.batch.end();
 
 		this.monde.removeDeathEntite(this.monde.bodiesEntiteVivant);
@@ -131,15 +195,15 @@ public class MondeBaseService {
 
 	public void creerPorte(List<MapObject> eventInterupteur, List<MapObject> eventPorte) {
 		for (MapObject object : eventInterupteur) {
-			 float posX = (Float) object.getProperties().get("x");
-			 float posY = (Float) object.getProperties().get("y");
+			float posX = (Float) object.getProperties().get("x");
+			float posY = (Float) object.getProperties().get("y");
 
 			// decalage.
 			final String direction = (String) object.getProperties().get("direction");
 			if (direction.equals("long")) {
-				posX = posX + Monde.MULTIPLICATEUR/2;
-			}else{
-				posY = posY + Monde.MULTIPLICATEUR/2;
+				posX = posX + Monde.MULTIPLICATEUR / 2;
+			} else {
+				posY = posY + Monde.MULTIPLICATEUR / 2;
 			}
 
 			final Vector2 position = new Vector2(posX, posY);
@@ -149,6 +213,8 @@ public class MondeBaseService {
 			Interrupteur interrupteur = new Interrupteur(position, longueur, hauteur);
 
 			MondeBodyService.creerEvent(this.monde.world, interrupteur);
+
+			this.monde.evenements.add(interrupteur);
 		}
 
 	}
