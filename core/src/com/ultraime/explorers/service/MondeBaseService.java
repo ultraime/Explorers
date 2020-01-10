@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.ultraime.explorers.Evenement.Interrupteur;
+import com.ultraime.explorers.Evenement.Porte;
 import com.ultraime.explorers.entite.EntiteJoueur;
 import com.ultraime.game.gdxtraime.Evenement.Evenement;
 import com.ultraime.game.gdxtraime.carte.Carte;
@@ -152,6 +153,23 @@ public class MondeBaseService {
 				}
 			}
 		}
+
+		//collision des portes
+//		final TiledMapTileLayer layerPorte = monde.carte.getLayers("porte");
+//		for (int x = 0; x < layerPorte.getWidth(); x++) {
+//			for (int y = 0; y < layerPorte.getHeight(); y++) {
+//				final Cell cell = layerPorte.getCell(x, y);
+//				if (cell != null && cell.getTile() != null) {
+//					float largeur = 1f;
+//					float longueur = 1f;
+//					float posX = x + 0.5f;
+//					float posY = y + 0.5f;
+//					EntiteStatic entiteStatic = new EntiteStatic(posX, posY, largeur, longueur);
+//					monde.addEntiteStatic(entiteStatic);
+//
+//				}
+//			}
+//		}
 	}
 
 	/**
@@ -197,7 +215,6 @@ public class MondeBaseService {
 		for (MapObject object : eventInterupteur) {
 			float posX = (Float) object.getProperties().get("x");
 			float posY = (Float) object.getProperties().get("y");
-
 			// decalage.
 			final String direction = (String) object.getProperties().get("direction");
 			if (direction.equals("long")) {
@@ -205,7 +222,6 @@ public class MondeBaseService {
 			} else {
 				posY = posY + Monde.MULTIPLICATEUR / 2;
 			}
-
 			final Vector2 position = new Vector2(posX, posY);
 			final float longueur = (Float) object.getProperties().get("width");
 			final float hauteur = (Float) object.getProperties().get("height");
@@ -216,6 +232,36 @@ public class MondeBaseService {
 
 			this.monde.evenements.add(interrupteur);
 		}
+		
+		for (MapObject object : eventPorte) {
+			float posX = (Float) object.getProperties().get("x");
+			float posY = (Float) object.getProperties().get("y");
+
+			// decalage.
+//			final String direction = (String) object.getProperties().get("direction");
+//			if (direction.equals("long")) {
+//				posX = posX + Monde.MULTIPLICATEUR / 2;
+//			} else {
+//				posY = posY + Monde.MULTIPLICATEUR / 2;
+//			}
+
+			final Vector2 position = new Vector2(posX, posY);
+			final float longueur = (Float) object.getProperties().get("width");
+			final float hauteur = (Float) object.getProperties().get("height");
+
+			Porte porte = new Porte(position, longueur, hauteur);
+
+			MondeBodyService.creerEvent(this.monde.world, porte);
+
+			this.monde.evenements.add(porte);
+		}
+		//porte
+//		float largeur = 1f;
+//		float longueur = 1f;
+//		float posX = x + 0.5f;
+//		float posY = y + 0.5f;
+//		EntiteStatic entiteStatic = new EntiteStatic(posX, posY, largeur, longueur);
+//		monde.addEntiteStatic(entiteStatic);
 
 	}
 
