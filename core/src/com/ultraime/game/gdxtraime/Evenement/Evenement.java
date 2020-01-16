@@ -13,7 +13,7 @@ public abstract class Evenement implements Serializable {
 	private static final long serialVersionUID = 1L;
 	public Vector2 position;
 	public float largeur, hauteur;
-
+	public int id = -1;
 	/**
 	 * le bouton d'animation
 	 */

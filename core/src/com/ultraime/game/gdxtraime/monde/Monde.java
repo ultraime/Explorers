@@ -37,12 +37,11 @@ public class Monde {
 	// entite Body dans le monde.
 	public ArrayList<Body> bodiesEntiteVivant = new ArrayList<Body>();
 	public ArrayList<Body> bodiesBullets = new ArrayList<Body>();
+	public ArrayList<Body> bodiesEvent = new ArrayList<Body>();
+
 	// les entites static sont une liste de body + rectangle
 	private List<Rectangle> rectangleBodies;
-	
-	//event du monde
-	public List<Evenement> evenements = new ArrayList<Evenement>();
-	
+
 	public Box2DDebugRenderer debugRenderer;
 //	public CameraGame cameraDebug = new CameraGame(Parametre.LARGEUR_ECRAN / MULTIPLICATEUR,
 //			Parametre.HAUTEUR_ECRAN / MULTIPLICATEUR);
@@ -95,8 +94,9 @@ public class Monde {
 		removeDeathEntite(bodiesEntiteVivant);
 		removeDeathEntite(bodiesBullets);
 	}
+
 	public void renderEvent() {
-		evenements.forEach(item->item.render(batch));
+		bodiesEvent.forEach(item -> ((Evenement) item.getUserData()).render(batch));
 	}
 
 	public Body recupererBodyFromEntite(final EntiteVivante entiteVivante) {
@@ -149,13 +149,18 @@ public class Monde {
 		bodiesEntiteVivant.add(body);
 		return body;
 	}
-	
+
 	public Body addPAlienMuscle(final EntiteVivante entiteVivante) {
 		Body body = MondeBodyService.creerAlienMuscle(world, entiteVivante);
 		bodiesEntiteVivant.add(body);
 		return body;
 	}
-	
+
+	public Body addEvent(Evenement evenement) {
+		final Body body = MondeBodyService.creerEvent(world, evenement);
+		this.bodiesEvent.add(body);
+		return body;
+	}
 
 	public void gestionBodies() {
 		ArrayList<Body> bodies = bodiesEntiteVivant;
@@ -170,8 +175,7 @@ public class Monde {
 	}
 
 	/**
-	 * @param OrthographicCamera
-	 *            camera
+	 * @param OrthographicCamera camera
 	 */
 	public void renderDebug(final OrthographicCamera camera) {
 		if (Parametre.MODE_DEBUG) {
@@ -188,6 +192,7 @@ public class Monde {
 		cameraDebug.position.y = vec.y;
 		cameraDebug.update();
 	}
+
 	public void zoomCameraDebug(int amount) {
 		float testValidite = 0;
 		if (amount < 0) {
@@ -275,14 +280,6 @@ public class Monde {
 		carte.updateCamera(camera);
 	}
 
-	public void dispose() {
-		this.batch.dispose();
-		this.world.dispose();
-		this.debugRenderer.dispose();
-		this.carte.dispose();
-
-	}
-
 	public void removeDeathEntite(ArrayList<Body> arrayList) {
 
 		Entite entite = null;
@@ -298,5 +295,12 @@ public class Monde {
 
 	}
 
+	public void dispose() {
+		this.batch.dispose();
+		this.world.dispose();
+		this.debugRenderer.dispose();
+		this.carte.dispose();
+
+	}
 
 }

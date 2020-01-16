@@ -1,6 +1,8 @@
 package com.ultraime.explorers.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.MapObject;
@@ -22,7 +24,6 @@ import com.ultraime.game.gdxtraime.entite.Entite;
 import com.ultraime.game.gdxtraime.entite.EntiteStatic;
 import com.ultraime.game.gdxtraime.monde.CameraGame;
 import com.ultraime.game.gdxtraime.monde.Monde;
-import com.ultraime.game.gdxtraime.monde.MondeBodyService;
 import com.ultraime.game.gdxtraime.parametrage.Parametre;
 
 public class MondeBaseService {
@@ -153,23 +154,6 @@ public class MondeBaseService {
 				}
 			}
 		}
-
-		//collision des portes
-//		final TiledMapTileLayer layerPorte = monde.carte.getLayers("porte");
-//		for (int x = 0; x < layerPorte.getWidth(); x++) {
-//			for (int y = 0; y < layerPorte.getHeight(); y++) {
-//				final Cell cell = layerPorte.getCell(x, y);
-//				if (cell != null && cell.getTile() != null) {
-//					float largeur = 1f;
-//					float longueur = 1f;
-//					float posX = x + 0.5f;
-//					float posY = y + 0.5f;
-//					EntiteStatic entiteStatic = new EntiteStatic(posX, posY, largeur, longueur);
-//					monde.addEntiteStatic(entiteStatic);
-//
-//				}
-//			}
-//		}
 	}
 
 	/**
@@ -212,56 +196,75 @@ public class MondeBaseService {
 	}
 
 	public void creerPorte(List<MapObject> eventInterupteur, List<MapObject> eventPorte) {
+
+		List<Interrupteur> interupteurs = new ArrayList<Interrupteur>();
 		for (MapObject object : eventInterupteur) {
 			float posX = (Float) object.getProperties().get("x");
 			float posY = (Float) object.getProperties().get("y");
-			// decalage.
-			final String direction = (String) object.getProperties().get("direction");
-			if (direction.equals("long")) {
-				posX = posX + Monde.MULTIPLICATEUR / 2;
-			} else {
-				posY = posY + Monde.MULTIPLICATEUR / 2;
-			}
-			final Vector2 position = new Vector2(posX, posY);
 			final float longueur = (Float) object.getProperties().get("width");
 			final float hauteur = (Float) object.getProperties().get("height");
+			final int id_interrupteur = (Integer) object.getProperties().get("porte");
+
+			final Vector2 position = decalageEvenement(object, posX, posY, 2);
 
 			Interrupteur interrupteur = new Interrupteur(position, longueur, hauteur);
+			interrupteur.id = id_interrupteur;
+			this.monde.addEvent(interrupteur);
 
-			MondeBodyService.creerEvent(this.monde.world, interrupteur);
-
-			this.monde.evenements.add(interrupteur);
+			interupteurs.add(interrupteur);
 		}
-		
+
 		for (MapObject object : eventPorte) {
 			float posX = (Float) object.getProperties().get("x");
 			float posY = (Float) object.getProperties().get("y");
-
-			// decalage.
-//			final String direction = (String) object.getProperties().get("direction");
-//			if (direction.equals("long")) {
-//				posX = posX + Monde.MULTIPLICATEUR / 2;
-//			} else {
-//				posY = posY + Monde.MULTIPLICATEUR / 2;
-//			}
-
-			final Vector2 position = new Vector2(posX, posY);
 			final float longueur = (Float) object.getProperties().get("width");
 			final float hauteur = (Float) object.getProperties().get("height");
+			final int id_porte = (Integer) object.getProperties().get("porte");
+
+			final Vector2 position = decalageEvenement(object, posX, posY, 1);
 
 			Porte porte = new Porte(position, longueur, hauteur);
+			porte.id = id_porte;
+//			Optional<Interrupteur> matchingObject = interupteurs.stream().filter(i -> i.id == id_porte).findFirst();
+			final Body body = this.monde.addEvent(porte);
+			body.getFixtureList().get(0).setSensor(false);
 
-			MondeBodyService.creerEvent(this.monde.world, porte);
-
-			this.monde.evenements.add(porte);
+			// porte
+//			float largeur = 1f;
+//			float longueur = 1f;
+//			float posX = x + 0.5f;
+//			float posY = y + 0.5f;
+//			EntiteStatic entiteStatic = new EntiteStatic(posX, posY, largeur, longueur);
+//			monde.addEntiteStatic(entiteStatic);
 		}
-		//porte
-//		float largeur = 1f;
-//		float longueur = 1f;
-//		float posX = x + 0.5f;
-//		float posY = y + 0.5f;
-//		EntiteStatic entiteStatic = new EntiteStatic(posX, posY, largeur, longueur);
-//		monde.addEntiteStatic(entiteStatic);
+
+	}
+
+	/**
+	 * @param object
+	 * @param posX
+	 * @param posY
+	 * @param diviseur
+	 * @return
+	 */
+	private Vector2 decalageEvenement(final MapObject object, float posX, float posY, final int diviseur) {
+		final String direction = (String) object.getProperties().get("direction");
+		if (direction.equals("long")) {
+			posX = posX + Monde.MULTIPLICATEUR / diviseur;
+		} else {
+			posY = posY + Monde.MULTIPLICATEUR / diviseur;
+		}
+		return new Vector2(posX, posY);
+	}
+
+	public Body getEventAcionne() {
+		Body body = null;
+		Optional<Body> objectFInd = this.monde.bodiesEvent.stream()
+				.filter(e -> ((Evenement) e.getUserData()).showTouchEvent == true).findFirst();
+		if (objectFInd.isPresent()) {
+			body = objectFInd.get();
+		}
+		return body;
 
 	}
 

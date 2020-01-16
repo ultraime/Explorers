@@ -1,6 +1,7 @@
 package com.ultraime.explorers.ecran;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
@@ -8,9 +9,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.ultraime.explorers.Evenement.Interrupteur;
+import com.ultraime.explorers.Evenement.Porte;
 import com.ultraime.explorers.entite.EntiteAlien;
 import com.ultraime.explorers.service.JoueurService;
 import com.ultraime.explorers.service.MondeBaseService;
+import com.ultraime.game.gdxtraime.Evenement.Evenement;
 import com.ultraime.game.gdxtraime.ecran.Ecran;
 import com.ultraime.game.gdxtraime.ecran.EcranManagerAbstract;
 import com.ultraime.game.gdxtraime.entite.EntiteVivante;
@@ -54,27 +59,26 @@ public class EcranTest extends Ecran {
 		// creatuib du monde
 		this.mondeService = new MondeBaseService();
 
-		
-		//creations des murs.
+		// creations des murs.
 		this.mondeService.initialiserCollision();
-		
+
 		// Creation des entites
 		Vector2 position = this.mondeService.monde.carte.recupererPositionDepart("event", "centre");
-		
-		EntiteVivante entiteVivante = new EntiteVivante(position.x/Monde.MULTIPLICATEUR, position.y/Monde.MULTIPLICATEUR, 0.4f, (short) -1);
-		joueurService = new JoueurService(
-				this.mondeService.monde.addPersonnageMuscle(entiteVivante));
-		
-		//Creation des enemies
-		EntiteAlien alien = new EntiteAlien((position.x/Monde.MULTIPLICATEUR)-5, position.y/Monde.MULTIPLICATEUR, 0.4f, (short) -10);
+
+		EntiteVivante entiteVivante = new EntiteVivante(position.x / Monde.MULTIPLICATEUR,
+				position.y / Monde.MULTIPLICATEUR, 0.4f, (short) -1);
+		joueurService = new JoueurService(this.mondeService.monde.addPersonnageMuscle(entiteVivante));
+
+		// Creation des enemies
+		EntiteAlien alien = new EntiteAlien((position.x / Monde.MULTIPLICATEUR) - 5, position.y / Monde.MULTIPLICATEUR,
+				0.4f, (short) -10);
 		this.mondeService.monde.addPAlienMuscle(alien);
-		
-		//creation des portes et interrupteur.
+
+		// creation des portes et interrupteur.
 		List<MapObject> eventInterupteur = this.mondeService.monde.carte.recupererEvents("event", "interrupteur");
 		List<MapObject> eventPorte = this.mondeService.monde.carte.recupererEvents("event", "porte");
-		
-		this.mondeService.creerPorte(eventInterupteur,eventPorte);
 
+		this.mondeService.creerPorte(eventInterupteur, eventPorte);
 
 	}
 
@@ -115,7 +119,35 @@ public class EcranTest extends Ecran {
 	public boolean keyDown(int keycode) {
 		presserTouche(keycode);
 		deplacementJoueur();
+		toucheEvent();
 		return false;
+	}
+
+	private void toucheEvent() {
+		if (isTouchPressed(Input.Keys.E)) {
+			Body body = this.mondeService.getEventAcionne();
+			if (body != null) {
+				Evenement event = (Evenement) body.getUserData();
+				if (event instanceof Interrupteur) {
+					ouvertureFermeturePorte(event);
+				}
+			}
+		}
+
+	}
+
+	private void ouvertureFermeturePorte(Evenement event) {
+		Optional<Body> matchingObject = this.mondeService.monde.bodiesEvent.stream().filter(
+				i -> ((Evenement) i.getUserData()) instanceof Porte && ((Evenement) i.getUserData()).id == event.id)
+				.findFirst();
+		final Body bodyPorte = matchingObject.get();
+		final Fixture fixture = bodyPorte.getFixtureList().get(0);
+		if (fixture.isSensor()) {
+			fixture.setSensor(false);
+		} else {
+			fixture.setSensor(true);
+		}
+
 	}
 
 	@Override
@@ -152,7 +184,7 @@ public class EcranTest extends Ecran {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		joueurService.rotation(screenX, screenY,cameraGame.camera);
+		joueurService.rotation(screenX, screenY, cameraGame.camera);
 //		joueurService.rotation(screenX, screenY, this.mondeService.monde.cameraDebug);
 		positionSouris.x = screenX;
 		positionSouris.y = screenY;
@@ -162,7 +194,8 @@ public class EcranTest extends Ecran {
 	@Override
 	public boolean scrolled(int amount) {
 		this.cameraGame.zoom(amount);
-		this.mondeService.monde.zoomCameraDebug(amount);;
+		this.mondeService.monde.zoomCameraDebug(amount);
+		;
 		return false;
 	}
 
