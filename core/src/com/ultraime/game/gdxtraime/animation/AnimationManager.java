@@ -5,9 +5,9 @@ import java.io.Serializable;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
 
 public class AnimationManager implements Serializable {
 	/**
@@ -24,7 +24,6 @@ public class AnimationManager implements Serializable {
 	// pour que les plantes ne bouge pas en même temps
 	private float tempsAnimation = 0;
 	private String lienImage;
-	
 
 	/**
 	 * @param texture
@@ -35,7 +34,6 @@ public class AnimationManager implements Serializable {
 	public AnimationManager(Texture texture, int largeur, int hauteur, float vitesseAnimation) {
 		creerAnimation(texture, largeur, hauteur, vitesseAnimation);
 	}
-
 
 	private AnimationManager(final float largeur, final float hauteur, final float vitesseAnimation) {
 		this.largeur = largeur;
@@ -71,13 +69,13 @@ public class AnimationManager implements Serializable {
 	 */
 	public void creerAnimationByLienImage() {
 		try {
-		Texture txt = new Texture(Gdx.files.internal(lienImage));
-		this.texture = txt;
-		creerAnimation(txt, largeur, hauteur, vitesseAnimation);
-		}catch (Exception e) {
-			//TODO Exception qui doit être analysé.
+			Texture txt = new Texture(Gdx.files.internal(lienImage));
+			this.texture = txt;
+			creerAnimation(txt, largeur, hauteur, vitesseAnimation);
+		} catch (Exception e) {
+			// TODO Exception qui doit être analysé.
 			e.printStackTrace();
-			System.err.println("erreur d'animation. Le lien était : "+lienImage);
+			System.err.println("erreur d'animation. Le lien était : " + lienImage);
 		}
 	}
 
@@ -119,6 +117,7 @@ public class AnimationManager implements Serializable {
 		this.regionCourante = (TextureRegion) this.animation[nbLigne].getKeyFrame(this.tempsAnimation, true);
 		batch.draw(this.regionCourante, x, y, this.largeur, this.hauteur);
 	}
+
 	/**
 	 * @param batch
 	 * @param x
@@ -128,9 +127,10 @@ public class AnimationManager implements Serializable {
 	public void renderStop(final SpriteBatch batch, final float x, final float y, final int nbLigne) {
 		this.tempsAnimation += Gdx.graphics.getDeltaTime();
 		this.regionCourante = (TextureRegion) this.animation[nbLigne].getKeyFrame(this.tempsAnimation, false);
-		
+
 		batch.draw(this.regionCourante, x, y, this.largeur, this.hauteur);
 	}
+
 	/**
 	 * @param big_largeur
 	 * @param small_largeur
