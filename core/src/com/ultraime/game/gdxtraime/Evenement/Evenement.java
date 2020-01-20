@@ -14,6 +14,12 @@ public abstract class Evenement implements Serializable {
 	public Vector2 position;
 	public float largeur, hauteur;
 	public int id = -1;
+	public ETAT etat = ETAT.STOP;
+
+	public enum ETAT {
+		PLAY, STOP
+	};
+
 	/**
 	 * le bouton d'animation
 	 */

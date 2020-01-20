@@ -5,9 +5,9 @@ import java.io.Serializable;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 
 public class AnimationManager implements Serializable {
 	/**
@@ -124,10 +124,44 @@ public class AnimationManager implements Serializable {
 	 * @param y
 	 * @param nbLigne
 	 */
+	public void renderFirstFrame(final SpriteBatch batch, final float x, final float y, final int nbLigne) {
+		if (this.animation == null) {
+			creerAnimationByLienImage();
+		}
+		this.regionCourante = (TextureRegion) this.animation[nbLigne].getKeyFrame(0, true);
+		batch.draw(this.regionCourante, x, y, this.largeur, this.hauteur);
+	}
+
+	/**
+	 * @param batch
+	 * @param x
+	 * @param y
+	 * @param nbLigne
+	 * return isEND
+	 */
+	public boolean renderOneTime(final SpriteBatch batch, final float x, final float y, final int nbLigne) {
+		boolean isEND = true;
+		if (this.animation == null) {
+			creerAnimationByLienImage();
+		}
+		this.tempsAnimation += Gdx.graphics.getDeltaTime();
+		if (!this.animation[nbLigne].isAnimationFinished(this.tempsAnimation)) {
+			this.regionCourante = (TextureRegion) this.animation[nbLigne].getKeyFrame(this.tempsAnimation, true);
+			batch.draw(this.regionCourante, x, y, this.largeur, this.hauteur);
+			isEND = false;
+		}
+		return isEND;
+	}
+
+	/**
+	 * @param batch
+	 * @param x
+	 * @param y
+	 * @param nbLigne
+	 */
 	public void renderStop(final SpriteBatch batch, final float x, final float y, final int nbLigne) {
 		this.tempsAnimation += Gdx.graphics.getDeltaTime();
 		this.regionCourante = (TextureRegion) this.animation[nbLigne].getKeyFrame(this.tempsAnimation, false);
-
 		batch.draw(this.regionCourante, x, y, this.largeur, this.hauteur);
 	}
 
@@ -139,6 +173,15 @@ public class AnimationManager implements Serializable {
 	private int getNombreImage(float big_largeur, float small_largeur) {
 		int retour = (int) (big_largeur / small_largeur);
 		return retour;
+	}
+
+	public void setPlayMode(final int nbLigne, final PlayMode playMode) {
+		this.animation[nbLigne].setPlayMode(playMode);
+	}
+
+	public void resetAnimation() {
+		this.tempsAnimation = 0;
+		
 	}
 
 }

@@ -16,6 +16,7 @@ import com.ultraime.explorers.entite.EntiteAlien;
 import com.ultraime.explorers.service.JoueurService;
 import com.ultraime.explorers.service.MondeBaseService;
 import com.ultraime.game.gdxtraime.Evenement.Evenement;
+import com.ultraime.game.gdxtraime.Evenement.Evenement.ETAT;
 import com.ultraime.game.gdxtraime.ecran.Ecran;
 import com.ultraime.game.gdxtraime.ecran.EcranManagerAbstract;
 import com.ultraime.game.gdxtraime.entite.EntiteVivante;
@@ -141,11 +142,15 @@ public class EcranTest extends Ecran {
 				i -> ((Evenement) i.getUserData()) instanceof Porte && ((Evenement) i.getUserData()).id == event.id)
 				.findFirst();
 		final Body bodyPorte = matchingObject.get();
+		final Porte porte = (Porte) bodyPorte.getUserData();
+		
 		final Fixture fixture = bodyPorte.getFixtureList().get(0);
 		if (fixture.isSensor()) {
 			fixture.setSensor(false);
+			porte.fermerPorte(true);
 		} else {
 			fixture.setSensor(true);
+			porte.fermerPorte(false);
 		}
 
 	}
