@@ -76,17 +76,20 @@ public class MondeBaseService {
 					}
 				}
 				return isContact;
-
 			}
 
 			private void contactBullets(final Fixture fixtureA, final Fixture fixtureB) {
 				if (monde.bodiesBullets.contains(fixtureA.getBody())) {
-					if (!(fixtureB.getBody().getUserData() instanceof Evenement)) {
+					if (!(fixtureB.getBody().getUserData() instanceof Evenement)
+							|| ((fixtureB.getBody().getUserData() instanceof Evenement)
+									&& !fixtureB.getBody().getFixtureList().get(0).isSensor())) {
 						Entite e = (Entite) fixtureB.getBody().getUserData();
 						e.isDeleted = true;
 					}
 				} else if (monde.bodiesBullets.contains(fixtureB.getBody())) {
-					if (!(fixtureA.getBody().getUserData() instanceof Evenement)) {
+					if (!(fixtureA.getBody().getUserData() instanceof Evenement)
+							|| ((fixtureA.getBody().getUserData() instanceof Evenement)
+									&& !fixtureA.getBody().getFixtureList().get(0).isSensor())) {
 						Entite e = (Entite) fixtureB.getBody().getUserData();
 						e.isDeleted = true;
 					}
@@ -164,6 +167,14 @@ public class MondeBaseService {
 		if (this.monde.carte != null) {
 			this.monde.carte.render();
 		}
+
+		this.monde.batch.begin();
+		this.monde.gestionBodies();
+		this.monde.renderEvent();
+
+		this.monde.removeDeathEntite(this.monde.bodiesEntiteVivant);
+		this.monde.removeDeathEntite(this.monde.bodiesBullets);
+
 		if (!Parametre.PAUSE) {
 			float deltaTime = Gdx.graphics.getDeltaTime();
 			float frameTime = Math.min(deltaTime, 0.25f);
@@ -174,13 +185,8 @@ public class MondeBaseService {
 				updateCamera(joueurService, cameraGame);
 			}
 		}
-		this.monde.batch.begin();
-		this.monde.gestionBodies();
-		this.monde.renderEvent();
 		this.monde.batch.end();
 
-		this.monde.removeDeathEntite(this.monde.bodiesEntiteVivant);
-		this.monde.removeDeathEntite(this.monde.bodiesBullets);
 	}
 
 	/**
@@ -204,8 +210,9 @@ public class MondeBaseService {
 			final float longueur = (Float) object.getProperties().get("width");
 			final float hauteur = (Float) object.getProperties().get("height");
 			final int id_interrupteur = (Integer) object.getProperties().get("porte");
+			final String direction = (String) object.getProperties().get("direction");
 
-			final Vector2 position = decalageEvenement(object, posX, posY, 2);
+			final Vector2 position = decalageEvenement(direction, object, posX, posY, 2);
 
 			Interrupteur interrupteur = new Interrupteur(position, longueur, hauteur);
 			interrupteur.id = id_interrupteur;
@@ -220,10 +227,10 @@ public class MondeBaseService {
 			final float longueur = (Float) object.getProperties().get("width");
 			final float hauteur = (Float) object.getProperties().get("height");
 			final int id_porte = (Integer) object.getProperties().get("porte");
+			final String direction = (String) object.getProperties().get("direction");
+			final Vector2 position = decalageEvenement(direction, object, posX, posY, 1);
 
-			final Vector2 position = decalageEvenement(object, posX, posY, 1);
-
-			Porte porte = new Porte(position, longueur, hauteur);
+			Porte porte = new Porte(position, longueur, hauteur, direction);
 			porte.id = id_porte;
 //			Optional<Interrupteur> matchingObject = interupteurs.stream().filter(i -> i.id == id_porte).findFirst();
 			final Body body = this.monde.addEvent(porte);
@@ -247,8 +254,8 @@ public class MondeBaseService {
 	 * @param diviseur
 	 * @return
 	 */
-	private Vector2 decalageEvenement(final MapObject object, float posX, float posY, final int diviseur) {
-		final String direction = (String) object.getProperties().get("direction");
+	private Vector2 decalageEvenement(final String direction, final MapObject object, float posX, float posY,
+			final int diviseur) {
 		if (direction.equals("long")) {
 			posX = posX + Monde.MULTIPLICATEUR / diviseur;
 		} else {

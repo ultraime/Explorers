@@ -21,30 +21,54 @@ public class Porte extends Evenement {
 		FERMEE, OUVERT
 	};
 
-	public Porte(Vector2 position, float largeur, float hauteur) {
+	public Porte(Vector2 position, float largeur, float hauteur, final String direction) {
 		super(position, largeur, hauteur);
-		animationOuverturePorte = new AnimationManager(192, 64, 0.1f, "images/objet/porte_long.png");
+		this.direction = direction;
+		if (this.direction.equals(LONG)) {
+			animationOuverturePorte = new AnimationManager(192, 64, 0.1f, "images/objet/porte_long.png");
+		} else if (this.direction.equals(HAUT)) {
+			animationOuverturePorte = new AnimationManager(64, 192, 0.1f, "images/objet/porte_haut.png");
+		}
 	}
 
 	@Override
 	public void render(SpriteBatch batch) {
+		final Vector2 positionDraw = positionRender();
+		final float posX = positionDraw.x;
+		final float posY = positionDraw.y;
+		
 		if (ETAT.STOP.equals(etat)) {
 			if (ETATPORTE.FERMEE.equals(etatporte)) {
-				animationOuverturePorte.renderFirstFrame(batch, position.x - Monde.MULTIPLICATEUR, position.y, 0);
+				animationOuverturePorte.renderFirstFrame(batch, posX, posY, 0);
 			}
 		} else {
-			Boolean isEnd = animationOuverturePorte.renderOneTime(batch, position.x - Monde.MULTIPLICATEUR, position.y,
-					0);
+			Boolean isEnd = animationOuverturePorte.renderOneTime(batch, posX, posY, 0);
 			if (isEnd) {
 				etat = ETAT.STOP;
+				if (ETATPORTE.FERMEE.equals(etatporte)) {
+					// réaffichage pour évite que pendant 0.1sec rien n'est à l'écransqs
+					animationOuverturePorte.renderFirstFrame(batch, posX, posY, 0);
+				}
 			}
 		}
-	}
 
+	}
+	
+	private Vector2 positionRender() {
+		Vector2 positionRender = new Vector2(this.position.x,this.position.y);
+		if (this.direction.equals(LONG)) {
+			positionRender.x = position.x - Monde.MULTIPLICATEUR;
+		} else if (this.direction.equals(HAUT)) {
+			positionRender.y = position.y - Monde.MULTIPLICATEUR;
+		}
+		return positionRender;
+	}
+	
 	public void fermerPorte(boolean doitEtreFermer) {
 		if (doitEtreFermer) {
 			animationOuverturePorte.setPlayMode(0, PlayMode.LOOP_REVERSED);
 			etatporte = ETATPORTE.FERMEE;
+			animationOuverturePorte.resetAnimation();
 		} else {
 			animationOuverturePorte.setPlayMode(0, PlayMode.NORMAL);
 			etatporte = ETATPORTE.OUVERT;

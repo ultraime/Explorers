@@ -6,7 +6,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class Evenement implements Serializable {
-
+	
+	public transient static final  String LONG = "long";
+	public transient static final  String HAUT = "haut";
+	
 	/**
 	 * 
 	 */
@@ -15,7 +18,9 @@ public abstract class Evenement implements Serializable {
 	public float largeur, hauteur;
 	public int id = -1;
 	public ETAT etat = ETAT.STOP;
-
+	public String direction = "";
+	
+	
 	public enum ETAT {
 		PLAY, STOP
 	};

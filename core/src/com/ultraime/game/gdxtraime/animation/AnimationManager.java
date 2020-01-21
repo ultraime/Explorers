@@ -128,7 +128,8 @@ public class AnimationManager implements Serializable {
 		if (this.animation == null) {
 			creerAnimationByLienImage();
 		}
-		this.regionCourante = (TextureRegion) this.animation[nbLigne].getKeyFrame(0, true);
+		final TextureRegion[] textureRegions = this.animation[nbLigne].getKeyFrames();
+		this.regionCourante = textureRegions[0];
 		batch.draw(this.regionCourante, x, y, this.largeur, this.hauteur);
 	}
 
@@ -153,17 +154,17 @@ public class AnimationManager implements Serializable {
 		return isEND;
 	}
 
-	/**
-	 * @param batch
-	 * @param x
-	 * @param y
-	 * @param nbLigne
-	 */
-	public void renderStop(final SpriteBatch batch, final float x, final float y, final int nbLigne) {
-		this.tempsAnimation += Gdx.graphics.getDeltaTime();
-		this.regionCourante = (TextureRegion) this.animation[nbLigne].getKeyFrame(this.tempsAnimation, false);
-		batch.draw(this.regionCourante, x, y, this.largeur, this.hauteur);
-	}
+//	/**
+//	 * @param batch
+//	 * @param x
+//	 * @param y
+//	 * @param nbLigne
+//	 */
+//	public void renderStop(final SpriteBatch batch, final float x, final float y, final int nbLigne) {
+//		this.tempsAnimation += Gdx.graphics.getDeltaTime();
+//		this.regionCourante = (TextureRegion) this.animation[nbLigne].getKeyFrame(this.tempsAnimation, false);
+//		batch.draw(this.regionCourante, x, y, this.largeur, this.hauteur);
+//	}
 
 	/**
 	 * @param big_largeur
@@ -181,7 +182,6 @@ public class AnimationManager implements Serializable {
 
 	public void resetAnimation() {
 		this.tempsAnimation = 0;
-		
 	}
 
 }

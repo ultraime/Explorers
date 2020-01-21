@@ -136,19 +136,19 @@ public class MondeBodyService {
 	public static Body creerAlienMuscle(World world, final EntiteVivante entiteVivante) {
 		Body body = creerPersonnageMuscle(world, entiteVivante);
 		// zone de recherche
-		// CircleShape circle4 = new CircleShape();
-		// circle4.setRadius(entiteVivante.cercleShape.radius - 0.1f);
-		// circle4.setPosition(new Vector2(0, 0.4f + 0.6f));
+		float zoneDeRecherche = 6f;
+		 CircleShape circle4 = new CircleShape();
+		 circle4.setRadius(zoneDeRecherche);
+		 circle4.setPosition(new Vector2(0,0));
 
 		// fixture 4
-		// FixtureDef fixtureDef4 =
-		// creerFixtureDef(0,0,0,circle2,ZONE_DETECTION_ALIEN);
-
+		 FixtureDef fixtureDef4 =  creerFixtureDef(0,0,0,circle4,ZONE_DETECTION_ALIEN,true);
 		// Ajout de la fixture 4
-		// body.createFixture(fixtureDef4);
+		 body.createFixture(fixtureDef4);
 		body.setFixedRotation(true);
+
 		body.setUserData(entiteVivante);
-		// circle4.dispose();
+		 circle4.dispose();
 		return body;
 	}
 

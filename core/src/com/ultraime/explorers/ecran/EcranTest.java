@@ -16,7 +16,6 @@ import com.ultraime.explorers.entite.EntiteAlien;
 import com.ultraime.explorers.service.JoueurService;
 import com.ultraime.explorers.service.MondeBaseService;
 import com.ultraime.game.gdxtraime.Evenement.Evenement;
-import com.ultraime.game.gdxtraime.Evenement.Evenement.ETAT;
 import com.ultraime.game.gdxtraime.ecran.Ecran;
 import com.ultraime.game.gdxtraime.ecran.EcranManagerAbstract;
 import com.ultraime.game.gdxtraime.entite.EntiteVivante;
