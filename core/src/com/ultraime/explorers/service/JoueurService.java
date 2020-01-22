@@ -13,6 +13,15 @@ public class JoueurService {
 
 	public Body bodyJoueur;
 
+	/**
+	 * @param position
+	 * @return
+	 */
+	public static EntiteVivante creerEntiteVivante(final Vector2 position) {
+		return new EntiteVivante(position.x / Monde.MULTIPLICATEUR, position.y / Monde.MULTIPLICATEUR, 0.4f,
+				(short) -1);
+	}
+
 	public JoueurService(final Body bodyJoueur) {
 		this.bodyJoueur = bodyJoueur;
 		EntiteJoueur entiteJoueur = new EntiteJoueur(bodyJoueur);
@@ -60,23 +69,22 @@ public class JoueurService {
 	}
 
 	public void shot(final int screenX, final int screenY, final OrthographicCamera camera, final Monde monde) {
-		Vector3 mousePos = new Vector3();
-		mousePos = new Vector3(screenX, screenY, 0);
+		 Vector3 mousePos = new Vector3(screenX, screenY, 0);
 		camera.unproject(mousePos);
 		final EntiteJoueur entiteJoueur = (EntiteJoueur) bodyJoueur.getUserData();
 
 		float angle = new Vector2(mousePos.x, mousePos.y).sub(entiteJoueur.getAmresPosition()).angleRad();
 		entiteJoueur.rotation(Math.toDegrees(angle));
-		
+
 		float velocity = 10f;
 
 		final Vector2 decalage = entiteJoueur.getArmeDecalage();
 		float posX = bodyJoueur.getPosition().x + decalage.x;
-		float posY = bodyJoueur.getPosition().y + decalage.y; //+0.5
+		float posY = bodyJoueur.getPosition().y + decalage.y; // +0.5
 		float velX = MathUtils.cos(angle) * velocity;
 		float velY = MathUtils.sin(angle) * velocity;
 //		posX + 10, posY + 35
-		
+
 		EntiteVivante bullet = new EntiteVivante(posX, posY, 0.04f, (short) -1);
 		Body body = monde.addEntiteVivante(bullet, monde.bodiesBullets);
 		body.setBullet(true);

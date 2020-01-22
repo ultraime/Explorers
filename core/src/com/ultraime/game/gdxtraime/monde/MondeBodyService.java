@@ -142,7 +142,7 @@ public class MondeBodyService {
 		 circle4.setPosition(new Vector2(0,0));
 
 		// fixture 4
-		 FixtureDef fixtureDef4 =  creerFixtureDef(0,0,0,circle4,ZONE_DETECTION_ALIEN,true);
+		 FixtureDef fixtureDef4 =  creerFixtureDef(-1f,0,0,circle4,ZONE_DETECTION_ALIEN,true);
 		// Ajout de la fixture 4
 		 body.createFixture(fixtureDef4);
 		body.setFixedRotation(true);

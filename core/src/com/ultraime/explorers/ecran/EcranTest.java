@@ -12,7 +12,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.ultraime.explorers.Evenement.Interrupteur;
 import com.ultraime.explorers.Evenement.Porte;
-import com.ultraime.explorers.entite.EntiteAlien;
+import com.ultraime.explorers.service.EntiteService;
 import com.ultraime.explorers.service.JoueurService;
 import com.ultraime.explorers.service.MondeBaseService;
 import com.ultraime.game.gdxtraime.Evenement.Evenement;
@@ -20,7 +20,6 @@ import com.ultraime.game.gdxtraime.ecran.Ecran;
 import com.ultraime.game.gdxtraime.ecran.EcranManagerAbstract;
 import com.ultraime.game.gdxtraime.entite.EntiteVivante;
 import com.ultraime.game.gdxtraime.monde.CameraGame;
-import com.ultraime.game.gdxtraime.monde.Monde;
 import com.ultraime.game.gdxtraime.parametrage.Parametre;
 
 /**
@@ -29,15 +28,13 @@ import com.ultraime.game.gdxtraime.parametrage.Parametre;
 public class EcranTest extends Ecran {
 
 	public MondeBaseService mondeService;
+	public JoueurService joueurService;
+	public EntiteService entiteService;
 
 	private CameraGame cameraGame;
 	private Vector2 positionSouris;
 
 	private boolean isDispose = false;
-
-	public JoueurService joueurService;
-
-	public Body bodyEnemie;
 
 	@Override
 	public void changerEcran(InputMultiplexer inputMultiplexer) {
@@ -56,23 +53,21 @@ public class EcranTest extends Ecran {
 		this.cameraGame.camera.position.x = 0;
 		this.cameraGame.camera.position.y = 0;
 
-		// creatuib du monde
+		// creation du monde
 		this.mondeService = new MondeBaseService();
 
 		// creations des murs.
 		this.mondeService.initialiserCollision();
 
-		// Creation des entites
-		Vector2 position = this.mondeService.monde.carte.recupererPositionDepart("event", "centre");
+		// Creation du joueur
+		final Vector2 position = this.mondeService.monde.carte.recupererPositionDepart("event", "centre");
+		EntiteVivante entiteVivante = JoueurService.creerEntiteVivante(position);
+		this.joueurService = new JoueurService(this.mondeService.monde.addPersonnageMuscle(entiteVivante));
 
-		EntiteVivante entiteVivante = new EntiteVivante(position.x / Monde.MULTIPLICATEUR,
-				position.y / Monde.MULTIPLICATEUR, 0.4f, (short) -1);
-		joueurService = new JoueurService(this.mondeService.monde.addPersonnageMuscle(entiteVivante));
+		//création des entites
+		this.entiteService = new EntiteService(this.mondeService.monde);
+		this.entiteService.initAlien(position);
 
-		// Creation des enemies
-		EntiteAlien alien = new EntiteAlien((position.x / Monde.MULTIPLICATEUR) - 5, position.y / Monde.MULTIPLICATEUR,
-				0.4f, (short) -10);
-		this.mondeService.monde.addPAlienMuscle(alien);
 
 		// creation des portes et interrupteur.
 		List<MapObject> eventInterupteur = this.mondeService.monde.carte.recupererEvents("event", "interrupteur");
@@ -87,6 +82,7 @@ public class EcranTest extends Ecran {
 		if (!isDispose) {
 			this.mondeService.render(this.joueurService, this.cameraGame);
 			this.mondeService.monde.renderDebug(cameraGame.camera);
+			this.entiteService.manage(this.joueurService.bodyJoueur);
 		}
 	}
 
@@ -142,7 +138,7 @@ public class EcranTest extends Ecran {
 				.findFirst();
 		final Body bodyPorte = matchingObject.get();
 		final Porte porte = (Porte) bodyPorte.getUserData();
-		
+
 		final Fixture fixture = bodyPorte.getFixtureList().get(0);
 		if (fixture.isSensor()) {
 			fixture.setSensor(false);

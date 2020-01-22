@@ -1,5 +1,8 @@
 package com.ultraime.explorers.entite;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class EntiteAlien extends EntitePersonnage {
@@ -9,10 +12,18 @@ public class EntiteAlien extends EntitePersonnage {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	public List<EntiteJoueur> entiteJoueursDansZone = new ArrayList<EntiteJoueur>();
+
+	public enum ETAT_ALIEN {
+		ATTEND, CHASSE_JOUEUR
+	};
+
+	public ETAT_ALIEN etatAlien = ETAT_ALIEN.ATTEND;
+
 	public EntiteAlien(float x, float y, float radius, short idDgroupe) {
 		super(x, y, radius, idDgroupe);
 	}
-	
+
 	public void render(final SpriteBatch batch, final float posX, final float posY) {
 		if (animationBody != null) {
 			switch (direction) {

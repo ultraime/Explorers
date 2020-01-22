@@ -87,10 +87,6 @@ public class Monde {
 				accumulator -= STEP_TIME;
 			}
 		}
-		this.batch.begin();
-		gestionBodies();
-		this.batch.end();
-
 		removeDeathEntite(bodiesEntiteVivant);
 		removeDeathEntite(bodiesBullets);
 	}
@@ -162,7 +158,7 @@ public class Monde {
 		return body;
 	}
 
-	public void gestionBodies() {
+	public void renderBodies() {
 		ArrayList<Body> bodies = bodiesEntiteVivant;
 		for (int i = 0; i < bodies.size(); i++) {
 			final Body body = bodies.get(i);

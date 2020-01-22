@@ -17,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.ultraime.explorers.Evenement.Interrupteur;
 import com.ultraime.explorers.Evenement.Porte;
+import com.ultraime.explorers.entite.EntiteAlien;
 import com.ultraime.explorers.entite.EntiteJoueur;
 import com.ultraime.game.gdxtraime.Evenement.Evenement;
 import com.ultraime.game.gdxtraime.carte.Carte;
@@ -44,9 +45,38 @@ public class MondeBaseService {
 				Fixture fixtureB = contact.getFixtureB();
 				boolean isContact = contactJoueurEvent(fixtureA, fixtureB);
 				if (!isContact) {
-					contactBullets(fixtureA, fixtureB);
+					isContact = contactBullets(fixtureA, fixtureB);
+				}
+				if (!isContact) {
+					isContact = contactZoneAlien(fixtureA, fixtureB);
 				}
 
+			}
+
+			private boolean contactZoneAlien(Fixture fixtureA, Fixture fixtureB) {
+				boolean isContact = false;
+				EntiteJoueur entiteJoueur = null;
+				EntiteAlien entiteAlien = null;
+				if (fixtureA.getDensity() == -1 && fixtureA.getBody().getUserData() instanceof EntiteAlien) {
+					if (fixtureB.getBody().getUserData() instanceof EntiteJoueur) {
+						System.out.println("MondeBaseService : contact avec la zone de recherche de l'alien");
+						isContact = true;
+						entiteJoueur = (EntiteJoueur) fixtureB.getBody().getUserData() ;
+						entiteAlien  = (EntiteAlien) fixtureA.getBody().getUserData() ;
+					}
+				} else if (fixtureB.getDensity() == -1 && fixtureB.getBody().getUserData() instanceof EntiteAlien) {
+					if (fixtureA.getBody().getUserData() instanceof EntiteJoueur) {
+						System.out.println("MondeBaseService : contact avec la zone de recherche de l'alien");
+						isContact = true;
+						entiteJoueur = (EntiteJoueur) fixtureA.getBody().getUserData() ;
+						entiteAlien  = (EntiteAlien) fixtureB.getBody().getUserData() ;
+					}
+				}
+				if(isContact) {
+					entiteAlien.entiteJoueursDansZone.add(entiteJoueur);
+				}
+				
+				return isContact;
 			}
 
 			private boolean contactJoueurEvent(final Fixture fixtureA, final Fixture fixtureB) {
@@ -78,56 +108,75 @@ public class MondeBaseService {
 				return isContact;
 			}
 
-			private void contactBullets(final Fixture fixtureA, final Fixture fixtureB) {
-				if (monde.bodiesBullets.contains(fixtureA.getBody())) {
-					if (!(fixtureB.getBody().getUserData() instanceof Evenement)
-							|| ((fixtureB.getBody().getUserData() instanceof Evenement)
-									&& !fixtureB.getBody().getFixtureList().get(0).isSensor())) {
-						Entite e = (Entite) fixtureB.getBody().getUserData();
-						e.isDeleted = true;
-					}
-				} else if (monde.bodiesBullets.contains(fixtureB.getBody())) {
-					if (!(fixtureA.getBody().getUserData() instanceof Evenement)
-							|| ((fixtureA.getBody().getUserData() instanceof Evenement)
-									&& !fixtureA.getBody().getFixtureList().get(0).isSensor())) {
-						Entite e = (Entite) fixtureB.getBody().getUserData();
-						e.isDeleted = true;
+			private Boolean contactBullets(final Fixture fixtureA, final Fixture fixtureB) {
+				Boolean isContact = false;
+				if (fixtureA.getDensity() != -1f && fixtureB.getDensity() != -1f) {
+					if (monde.bodiesBullets.contains(fixtureA.getBody())) {
+						if (!(fixtureB.getBody().getUserData() instanceof Evenement)
+								|| ((fixtureB.getBody().getUserData() instanceof Evenement)
+										&& !fixtureB.getBody().getFixtureList().get(0).isSensor())) {
+							Entite e = (Entite) fixtureB.getBody().getUserData();
+							e.isDeleted = true;
+							isContact = true;
+						}
+					} else if (monde.bodiesBullets.contains(fixtureB.getBody())) {
+						if (!(fixtureA.getBody().getUserData() instanceof Evenement)
+								|| ((fixtureA.getBody().getUserData() instanceof Evenement)
+										&& !fixtureA.getBody().getFixtureList().get(0).isSensor())) {
+							Entite e = (Entite) fixtureB.getBody().getUserData();
+							e.isDeleted = true;
+							isContact = true;
+						}
 					}
 				}
+				return isContact;
 			}
 
 			@Override
 			public void endContact(Contact contact) {
 				Fixture fixtureA = contact.getFixtureA();
 				Fixture fixtureB = contact.getFixtureB();
-				endContactJoueurEvent(fixtureA, fixtureB);
+				Boolean isEndContact = endContactJoueurEvent(fixtureA, fixtureB);
+				if (!isEndContact) {
+					isEndContact = EndContactZoneAlien(fixtureA, fixtureB);
+				}
+			}
+			private boolean EndContactZoneAlien(Fixture fixtureA, Fixture fixtureB) {
+				boolean isEndContact = false;
+				if (fixtureA.getDensity() == -1 && fixtureA.getBody().getUserData() instanceof EntiteAlien) {
+					if (fixtureB.getBody().getUserData() instanceof EntiteJoueur) {
+						isEndContact = true;
+					}
+				} else if (fixtureB.getDensity() == -1 && fixtureB.getBody().getUserData() instanceof EntiteAlien) {
+					if (fixtureA.getBody().getUserData() instanceof EntiteJoueur) {
+						isEndContact = true;
+					}
+				}
+				return isEndContact;
 			}
 
-			private void endContactJoueurEvent(final Fixture fixtureA, final Fixture fixtureB) {
-				final Body bodyA = fixtureA.getBody();
-				final Body bodyB = fixtureB.getBody();
-
+			private Boolean endContactJoueurEvent(final Fixture fixtureA, final Fixture fixtureB) {
+				boolean isEndContact = false;
 				EntiteJoueur entiteJoueur = null;
-				Object objEvent = null;
-				// recuperation des datas
-				if (bodyA.getUserData() instanceof EntiteJoueur) {
-					entiteJoueur = (EntiteJoueur) bodyA.getUserData();
-					if (bodyB.getUserData() instanceof Evenement) {
-						objEvent = bodyB.getUserData();
+				EntiteAlien entiteAlien = null;
+				if (fixtureA.getDensity() == -1 && fixtureA.getBody().getUserData() instanceof EntiteAlien) {
+					if (fixtureB.getBody().getUserData() instanceof EntiteJoueur) {
+						isEndContact = true;
+						entiteJoueur = (EntiteJoueur) fixtureB.getBody().getUserData() ;
+						entiteAlien  = (EntiteAlien) fixtureA.getBody().getUserData() ;
 					}
-				} else if (bodyB.getUserData() instanceof EntiteJoueur)
-					entiteJoueur = (EntiteJoueur) bodyB.getUserData();
-				if (bodyA.getUserData() instanceof Evenement) {
-					objEvent = bodyA.getUserData();
-				}
-				//
-				if (entiteJoueur != null && objEvent != null) {
-					if (objEvent instanceof Interrupteur) {
-						final Interrupteur interrupteur = (Interrupteur) objEvent;
-						interrupteur.showTouchEvent = false;
+				} else if (fixtureB.getDensity() == -1 && fixtureB.getBody().getUserData() instanceof EntiteAlien) {
+					if (fixtureA.getBody().getUserData() instanceof EntiteJoueur) {
+						isEndContact = true;
+						entiteJoueur = (EntiteJoueur) fixtureA.getBody().getUserData() ;
+						entiteAlien  = (EntiteAlien) fixtureB.getBody().getUserData() ;
 					}
 				}
-
+				if(isEndContact) {
+					entiteAlien.entiteJoueursDansZone.remove(entiteJoueur);
+				}
+				
+				return isEndContact;
 			}
 
 			@Override
@@ -169,7 +218,7 @@ public class MondeBaseService {
 		}
 
 		this.monde.batch.begin();
-		this.monde.gestionBodies();
+		this.monde.renderBodies();
 		this.monde.renderEvent();
 
 		this.monde.removeDeathEntite(this.monde.bodiesEntiteVivant);
