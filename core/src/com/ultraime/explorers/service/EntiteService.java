@@ -22,7 +22,6 @@ public class EntiteService {
 		EntiteAlien alien = new EntiteAlien((position.x / Monde.MULTIPLICATEUR) - 10, position.y / Monde.MULTIPLICATEUR,
 				0.4f, (short) -10);
 		this.monde.addPAlienMuscle(alien);
-
 	}
 
 	/**
@@ -37,11 +36,19 @@ public class EntiteService {
 			final Body bodyEntite = bodies.get(i);
 			if (bodyEntite.getUserData() instanceof EntiteAlien) {
 				final EntiteAlien ev = (EntiteAlien) bodyEntite.getUserData();
+				ev.manage();
 				if (ev.etatAlien.equals(ETAT_ALIEN.CHASSE_JOUEUR)) {
 					chasseJoueur(bodyJoueur, bodyEntite, ev);
+				} else {
+					stopEntite(bodyEntite);
 				}
 			}
 		}
+	}
+
+	private void stopEntite(Body bodyEntite) {
+		bodyEntite.setLinearVelocity(0, 0);
+
 	}
 
 	private void chasseJoueur(final Body bodyJoueur, final Body bodyEntite, final EntiteAlien ev) {

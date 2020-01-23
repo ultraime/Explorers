@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.ultraime.game.gdxtraime.animation.AnimationManager;
 
 public class EntiteJoueur extends EntitePersonnage {
 
@@ -15,11 +16,13 @@ public class EntiteJoueur extends EntitePersonnage {
 	private static final long serialVersionUID = 1L;
 
 	protected Sprite pistolet;
+	protected AnimationManager animationTir;
 
 	public EntiteJoueur(float x, float y, float radius, short idDgroupe) {
 		super(x, y, radius, idDgroupe);
 
 		pistolet = new Sprite(new Texture(Gdx.files.internal("armes/pistolet.png")));
+		animationTir = new AnimationManager(50, 45, 0.1f, "armes/pistolet_tir_anime.png");
 		// this.animationManager = new AnimationManager(64, 128, 1f,
 		// "personnage/humain/astro_test2.png");
 		// this.animationManager = new AnimationManager(64, 76, 1f,
@@ -37,15 +40,15 @@ public class EntiteJoueur extends EntitePersonnage {
 			case BAS:
 				this.animationBody.render(batch, posX - 10, posY, 0);
 				this.animationTete.render(batch, posX - 10, posY, 0);
-				this.pistolet.setPosition(posX + 10, posY + 35);
+				this.pistolet.setPosition(posX + 10, posY + 25);
 				this.pistolet.draw(batch);
+				animationTir.renderWithRotation(batch, posX , posY +45 , 0,this.pistolet.getRotation());
 				break;
 			case HAUT:
 				this.pistolet.setPosition(posX + 10, posY + 55);
 				this.pistolet.draw(batch);
 				this.animationBody_h.render(batch, posX - 10, posY, 0);
 				this.animationTete_h.render(batch, posX - 10, posY, 0);
-
 				break;
 			case GAUCHE:
 				this.animationBody_g.render(batch, posX, posY, 0);
@@ -59,11 +62,12 @@ public class EntiteJoueur extends EntitePersonnage {
 				this.pistolet.setPosition(posX + 40, posY + 35);
 				this.pistolet.draw(batch);
 				break;
-
 			default:
 				this.animationBody.render(batch, posX - 10, posY, 0);
 				break;
 			}
+			
+	
 
 		}
 	}

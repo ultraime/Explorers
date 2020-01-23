@@ -117,7 +117,21 @@ public class AnimationManager implements Serializable {
 		this.regionCourante = (TextureRegion) this.animation[nbLigne].getKeyFrame(this.tempsAnimation, true);
 		batch.draw(this.regionCourante, x, y, this.largeur, this.hauteur);
 	}
-
+	/**
+	 * @param batch
+	 * @param x
+	 * @param y
+	 * @param nbLigne
+	 * @param rotation (en degrée)
+	 */
+	public void renderWithRotation(final SpriteBatch batch, final float x, final float y, final int nbLigne,final float rotation) {
+		if (this.animation == null) {
+			creerAnimationByLienImage();
+		}
+		this.tempsAnimation += Gdx.graphics.getDeltaTime();
+		this.regionCourante = (TextureRegion) this.animation[nbLigne].getKeyFrame(this.tempsAnimation, true);
+		batch.draw(this.regionCourante, x, y,1f,1f ,this.largeur, this.hauteur,1f,1f,rotation);
+	}
 	/**
 	 * @param batch
 	 * @param x

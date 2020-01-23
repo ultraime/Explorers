@@ -23,7 +23,15 @@ public class EntiteAlien extends EntitePersonnage {
 	public EntiteAlien(float x, float y, float radius, short idDgroupe) {
 		super(x, y, radius, idDgroupe);
 	}
-
+	
+	public void manage() {
+		if (entiteJoueursDansZone.size() > 0) {
+			etatAlien = ETAT_ALIEN.CHASSE_JOUEUR;
+		}else {
+			etatAlien = ETAT_ALIEN.ATTEND;
+		}
+	}
+	
 	public void render(final SpriteBatch batch, final float posX, final float posY) {
 		if (animationBody != null) {
 			switch (direction) {

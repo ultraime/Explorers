@@ -59,23 +59,21 @@ public class MondeBaseService {
 				EntiteAlien entiteAlien = null;
 				if (fixtureA.getDensity() == -1 && fixtureA.getBody().getUserData() instanceof EntiteAlien) {
 					if (fixtureB.getBody().getUserData() instanceof EntiteJoueur) {
-						System.out.println("MondeBaseService : contact avec la zone de recherche de l'alien");
-						isContact = true;
-						entiteJoueur = (EntiteJoueur) fixtureB.getBody().getUserData() ;
-						entiteAlien  = (EntiteAlien) fixtureA.getBody().getUserData() ;
+						entiteJoueur = (EntiteJoueur) fixtureB.getBody().getUserData();
+						entiteAlien = (EntiteAlien) fixtureA.getBody().getUserData();
 					}
 				} else if (fixtureB.getDensity() == -1 && fixtureB.getBody().getUserData() instanceof EntiteAlien) {
 					if (fixtureA.getBody().getUserData() instanceof EntiteJoueur) {
-						System.out.println("MondeBaseService : contact avec la zone de recherche de l'alien");
-						isContact = true;
-						entiteJoueur = (EntiteJoueur) fixtureA.getBody().getUserData() ;
-						entiteAlien  = (EntiteAlien) fixtureB.getBody().getUserData() ;
+
+						entiteJoueur = (EntiteJoueur) fixtureA.getBody().getUserData();
+						entiteAlien = (EntiteAlien) fixtureB.getBody().getUserData();
 					}
 				}
-				if(isContact) {
+				if (entiteAlien != null) {
 					entiteAlien.entiteJoueursDansZone.add(entiteJoueur);
+					isContact = true;
 				}
-				
+
 				return isContact;
 			}
 
@@ -141,41 +139,57 @@ public class MondeBaseService {
 					isEndContact = EndContactZoneAlien(fixtureA, fixtureB);
 				}
 			}
-			private boolean EndContactZoneAlien(Fixture fixtureA, Fixture fixtureB) {
-				boolean isEndContact = false;
-				if (fixtureA.getDensity() == -1 && fixtureA.getBody().getUserData() instanceof EntiteAlien) {
-					if (fixtureB.getBody().getUserData() instanceof EntiteJoueur) {
-						isEndContact = true;
-					}
-				} else if (fixtureB.getDensity() == -1 && fixtureB.getBody().getUserData() instanceof EntiteAlien) {
-					if (fixtureA.getBody().getUserData() instanceof EntiteJoueur) {
-						isEndContact = true;
-					}
-				}
-				return isEndContact;
-			}
 
-			private Boolean endContactJoueurEvent(final Fixture fixtureA, final Fixture fixtureB) {
+			private boolean EndContactZoneAlien(Fixture fixtureA, Fixture fixtureB) {
 				boolean isEndContact = false;
 				EntiteJoueur entiteJoueur = null;
 				EntiteAlien entiteAlien = null;
 				if (fixtureA.getDensity() == -1 && fixtureA.getBody().getUserData() instanceof EntiteAlien) {
 					if (fixtureB.getBody().getUserData() instanceof EntiteJoueur) {
 						isEndContact = true;
-						entiteJoueur = (EntiteJoueur) fixtureB.getBody().getUserData() ;
-						entiteAlien  = (EntiteAlien) fixtureA.getBody().getUserData() ;
+						entiteJoueur = (EntiteJoueur) fixtureB.getBody().getUserData();
+						entiteAlien = (EntiteAlien) fixtureA.getBody().getUserData();
 					}
 				} else if (fixtureB.getDensity() == -1 && fixtureB.getBody().getUserData() instanceof EntiteAlien) {
 					if (fixtureA.getBody().getUserData() instanceof EntiteJoueur) {
 						isEndContact = true;
-						entiteJoueur = (EntiteJoueur) fixtureA.getBody().getUserData() ;
-						entiteAlien  = (EntiteAlien) fixtureB.getBody().getUserData() ;
+						entiteJoueur = (EntiteJoueur) fixtureA.getBody().getUserData();
+						entiteAlien = (EntiteAlien) fixtureB.getBody().getUserData();
 					}
 				}
-				if(isEndContact) {
+				if (isEndContact) {
 					entiteAlien.entiteJoueursDansZone.remove(entiteJoueur);
 				}
-				
+
+				return isEndContact;
+			}
+
+			private boolean endContactJoueurEvent(final Fixture fixtureA, final Fixture fixtureB) {
+				boolean isEndContact = false;
+				final Body bodyA = fixtureA.getBody();
+				final Body bodyB = fixtureB.getBody();
+
+				EntiteJoueur entiteJoueur = null;
+				Object objEvent = null;
+				// recuperation des datas
+				if (bodyA.getUserData() instanceof EntiteJoueur) {
+					entiteJoueur = (EntiteJoueur) bodyA.getUserData();
+					if (bodyB.getUserData() instanceof Evenement) {
+						objEvent = bodyB.getUserData();
+					}
+				} else if (bodyB.getUserData() instanceof EntiteJoueur)
+					entiteJoueur = (EntiteJoueur) bodyB.getUserData();
+				if (bodyA.getUserData() instanceof Evenement) {
+					objEvent = bodyA.getUserData();
+				}
+				//
+				if (entiteJoueur != null && objEvent != null) {
+					if (objEvent instanceof Interrupteur) {
+						final Interrupteur interrupteur = (Interrupteur) objEvent;
+						interrupteur.showTouchEvent = false;
+						isEndContact = true;
+					}
+				}
 				return isEndContact;
 			}
 
