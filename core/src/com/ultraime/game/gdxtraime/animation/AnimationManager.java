@@ -117,6 +117,7 @@ public class AnimationManager implements Serializable {
 		this.regionCourante = (TextureRegion) this.animation[nbLigne].getKeyFrame(this.tempsAnimation, true);
 		batch.draw(this.regionCourante, x, y, this.largeur, this.hauteur);
 	}
+
 	/**
 	 * @param batch
 	 * @param x
@@ -124,14 +125,19 @@ public class AnimationManager implements Serializable {
 	 * @param nbLigne
 	 * @param rotation (en degrée)
 	 */
-	public void renderWithRotation(final SpriteBatch batch, final float x, final float y, final int nbLigne,final float rotation) {
+	public void renderWithRotation(final SpriteBatch batch, final float x, final float y, final int nbLigne,
+			final float rotation,final boolean flipX,final boolean flipY) {
 		if (this.animation == null) {
 			creerAnimationByLienImage();
 		}
 		this.tempsAnimation += Gdx.graphics.getDeltaTime();
 		this.regionCourante = (TextureRegion) this.animation[nbLigne].getKeyFrame(this.tempsAnimation, true);
-		batch.draw(this.regionCourante, x, y,1f,1f ,this.largeur, this.hauteur,1f,1f,rotation);
+		batch.draw(this.regionCourante.getTexture(), x, y, this.largeur / 2, this.hauteur / 2, this.largeur, this.hauteur, 1f, 1f,
+				rotation, regionCourante.getRegionX(), regionCourante.getRegionY(), regionCourante.getRegionWidth(),
+				regionCourante.getRegionHeight(), flipX, flipY);
+
 	}
+
 	/**
 	 * @param batch
 	 * @param x
@@ -151,8 +157,7 @@ public class AnimationManager implements Serializable {
 	 * @param batch
 	 * @param x
 	 * @param y
-	 * @param nbLigne
-	 * return isEND
+	 * @param nbLigne return isEND
 	 */
 	public boolean renderOneTime(final SpriteBatch batch, final float x, final float y, final int nbLigne) {
 		boolean isEND = true;

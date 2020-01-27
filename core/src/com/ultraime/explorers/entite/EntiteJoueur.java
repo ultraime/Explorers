@@ -42,7 +42,7 @@ public class EntiteJoueur extends EntitePersonnage {
 				this.animationTete.render(batch, posX - 10, posY, 0);
 				this.pistolet.setPosition(posX + 10, posY + 25);
 				this.pistolet.draw(batch);
-				animationTir.renderWithRotation(batch, posX , posY +45 , 0,this.pistolet.getRotation());
+				this.animationTir.renderWithRotation(batch, posX + 10, posY + 25 , 0,this.pistolet.getRotation(),this.pistolet.isFlipX(),this.pistolet.isFlipY());
 				break;
 			case HAUT:
 				this.pistolet.setPosition(posX + 10, posY + 55);
