@@ -69,10 +69,10 @@ public class JoueurService {
 	}
 
 	public void shot(final int screenX, final int screenY, final OrthographicCamera camera, final Monde monde) {
-		 Vector3 mousePos = new Vector3(screenX, screenY, 0);
+		Vector3 mousePos = new Vector3(screenX, screenY, 0);
 		camera.unproject(mousePos);
 		final EntiteJoueur entiteJoueur = (EntiteJoueur) bodyJoueur.getUserData();
-
+		entiteJoueur.arme.isShot = true;
 		float angle = new Vector2(mousePos.x, mousePos.y).sub(entiteJoueur.getAmresPosition()).angleRad();
 		entiteJoueur.rotation(Math.toDegrees(angle));
 

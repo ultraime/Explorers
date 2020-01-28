@@ -125,16 +125,21 @@ public class AnimationManager implements Serializable {
 	 * @param nbLigne
 	 * @param rotation (en degrée)
 	 */
-	public void renderWithRotation(final SpriteBatch batch, final float x, final float y, final int nbLigne,
-			final float rotation,final boolean flipX,final boolean flipY) {
+	public boolean renderWithRotation(final SpriteBatch batch, final float x, final float y, final int nbLigne,
+			final float rotation, final boolean flipX, final boolean flipY) {
+		boolean isEND = true;
 		if (this.animation == null) {
 			creerAnimationByLienImage();
 		}
 		this.tempsAnimation += Gdx.graphics.getDeltaTime();
-		this.regionCourante = (TextureRegion) this.animation[nbLigne].getKeyFrame(this.tempsAnimation, true);
-		batch.draw(this.regionCourante.getTexture(), x, y, this.largeur / 2, this.hauteur / 2, this.largeur, this.hauteur, 1f, 1f,
-				rotation, regionCourante.getRegionX(), regionCourante.getRegionY(), regionCourante.getRegionWidth(),
-				regionCourante.getRegionHeight(), flipX, flipY);
+		if (!this.animation[nbLigne].isAnimationFinished(this.tempsAnimation)) {
+			this.regionCourante = (TextureRegion) this.animation[nbLigne].getKeyFrame(this.tempsAnimation, true);
+			batch.draw(this.regionCourante.getTexture(), x, y, this.largeur / 2, this.hauteur / 2, this.largeur,
+					this.hauteur, 1f, 1f, rotation, regionCourante.getRegionX(), regionCourante.getRegionY(),
+					regionCourante.getRegionWidth(), regionCourante.getRegionHeight(), flipX, flipY);
+			isEND = false;
+		}
+		return isEND;
 
 	}
 
