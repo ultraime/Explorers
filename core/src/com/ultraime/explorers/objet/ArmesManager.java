@@ -13,6 +13,8 @@ public class ArmesManager {
 			new AnimationManager(50, 45, 0.05f, "armes/pistolet_tir_anime.png"));
 
 	public static Arme creerPistolet() {
+		pistolet.habiliterGeneral.degat = 1;
+		pistolet.habiliterGeneral.vitesse = 10f;
 		return new Arme(pistolet);
 	}
 }

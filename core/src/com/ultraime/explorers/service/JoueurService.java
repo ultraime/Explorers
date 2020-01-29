@@ -72,6 +72,7 @@ public class JoueurService {
 		Vector3 mousePos = new Vector3(screenX, screenY, 0);
 		camera.unproject(mousePos);
 		final EntiteJoueur entiteJoueur = (EntiteJoueur) bodyJoueur.getUserData();
+		
 		entiteJoueur.arme.isShot = true;
 		float angle = new Vector2(mousePos.x, mousePos.y).sub(entiteJoueur.getAmresPosition()).angleRad();
 		entiteJoueur.rotation(Math.toDegrees(angle));
@@ -83,13 +84,12 @@ public class JoueurService {
 		float posY = bodyJoueur.getPosition().y + decalage.y; // +0.5
 		float velX = MathUtils.cos(angle) * velocity;
 		float velY = MathUtils.sin(angle) * velocity;
-//		posX + 10, posY + 35
 
 		EntiteVivante bullet = new EntiteVivante(posX, posY, 0.04f, (short) -1);
 		Body body = monde.addEntiteVivante(bullet, monde.bodiesBullets);
 		body.setBullet(true);
 		body.setLinearVelocity(velX, velY);
-//		System.err.println(Math.toDegrees(angle));
+
 
 	}
 

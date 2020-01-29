@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.ultraime.game.gdxtraime.animation.AnimationManager;
 import com.ultraime.game.gdxtraime.entite.EntiteVivante.Direction;
+import com.ultraime.game.gdxtraime.entite.metier.HabiliterGeneral;
 
 public class Arme implements Serializable {
 
@@ -22,8 +23,15 @@ public class Arme implements Serializable {
 
 	// stat de l'arme
 	public String nom;
-	public int degat;
+	public HabiliterGeneral habiliterGeneral = new HabiliterGeneral();
 
+	/**
+	 * @param nom
+	 * @param balle
+	 * @param spirteArme
+	 * @param animationTir
+	 * @return
+	 */
 	public static Arme creerArme(final String nom, final Sprite spirteArme, final AnimationManager animationTir) {
 		Arme arme = new Arme();
 		arme.nom = nom;
@@ -39,6 +47,7 @@ public class Arme implements Serializable {
 		this.nom = arme.nom;
 		this.spirteArme = arme.spirteArme;
 		this.animationTir = arme.animationTir;
+		this.habiliterGeneral = new HabiliterGeneral(arme.habiliterGeneral);
 	}
 
 	/**

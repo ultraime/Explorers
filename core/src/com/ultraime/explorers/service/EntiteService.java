@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.ultraime.explorers.entite.EntiteAlien;
 import com.ultraime.explorers.entite.EntiteAlien.ETAT_ALIEN;
+import com.ultraime.game.gdxtraime.entite.metier.HabiliterGeneral;
 import com.ultraime.game.gdxtraime.monde.Monde;
 
 public class EntiteService {
@@ -21,6 +22,8 @@ public class EntiteService {
 	public void initAlien(final Vector2 position) {
 		EntiteAlien alien = new EntiteAlien((position.x / Monde.MULTIPLICATEUR) - 10, position.y / Monde.MULTIPLICATEUR,
 				0.4f, (short) -10);
+		alien.habiliter.sante[HabiliterGeneral.MAX] = 3;
+		alien.habiliter.sante[HabiliterGeneral.ACTUEL] = 3;
 		this.monde.addPAlienMuscle(alien);
 	}
 
