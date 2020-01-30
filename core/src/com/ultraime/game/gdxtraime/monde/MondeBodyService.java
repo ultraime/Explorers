@@ -116,7 +116,7 @@ public class MondeBodyService {
 		circle3.setRadius(entiteVivante.cercleShape.radius - 0.1f);
 		circle3.setPosition(new Vector2(0, 0.4f + 0.6f));
 		// fixture 3
-		final FixtureDef fixtureDef3 = creerFixtureDef(0, 0, 0, circle2, entiteVivante.idGroup, true);
+		final FixtureDef fixtureDef3 = creerFixtureDef(0, 0, 0, circle3, entiteVivante.idGroup, true);
 		// Ajout de la fixture 12
 		body.createFixture(fixtureDef3);
 

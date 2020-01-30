@@ -5,9 +5,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.ultraime.explorers.entite.Balle;
 import com.ultraime.explorers.entite.EntiteJoueur;
 import com.ultraime.game.gdxtraime.entite.EntiteVivante;
 import com.ultraime.game.gdxtraime.monde.Monde;
+import com.ultraime.game.gdxtraime.objet.Arme;
 
 public class JoueurService {
 
@@ -72,25 +74,27 @@ public class JoueurService {
 		Vector3 mousePos = new Vector3(screenX, screenY, 0);
 		camera.unproject(mousePos);
 		final EntiteJoueur entiteJoueur = (EntiteJoueur) bodyJoueur.getUserData();
-		
-		entiteJoueur.arme.isShot = true;
-		float angle = new Vector2(mousePos.x, mousePos.y).sub(entiteJoueur.getAmresPosition()).angleRad();
-		entiteJoueur.rotation(Math.toDegrees(angle));
+		final Arme arme = entiteJoueur.arme;
+		if (arme != null) {
+			arme.isShot = true;
+			float angle = new Vector2(mousePos.x, mousePos.y).sub(entiteJoueur.getAmresPosition()).angleRad();
+			entiteJoueur.rotation(Math.toDegrees(angle));
 
-		float velocity = 10f;
+			float velocity = arme.habiliterGeneral.vitesse;
 
-		final Vector2 decalage = entiteJoueur.getArmeDecalage();
-		float posX = bodyJoueur.getPosition().x + decalage.x;
-		float posY = bodyJoueur.getPosition().y + decalage.y; // +0.5
-		float velX = MathUtils.cos(angle) * velocity;
-		float velY = MathUtils.sin(angle) * velocity;
+			final Vector2 decalage = entiteJoueur.getArmeDecalage();
+			float posX = bodyJoueur.getPosition().x + decalage.x;
+			float posY = bodyJoueur.getPosition().y + decalage.y; // +0.5
+			float velX = MathUtils.cos(angle) * velocity;
+			float velY = MathUtils.sin(angle) * velocity;
 
-		EntiteVivante bullet = new EntiteVivante(posX, posY, 0.04f, (short) -1);
-		Body body = monde.addEntiteVivante(bullet, monde.bodiesBullets);
-		body.setBullet(true);
-		body.setLinearVelocity(velX, velY);
+			Balle bullet = new Balle(posX, posY, 0.04f, (short) -1);
+			bullet.habiliter = arme.habiliterGeneral;
+			Body body = monde.addEntiteVivante(bullet, monde.bodiesBullets);
+			body.setBullet(true);
+			body.setLinearVelocity(velX, velY);
 
-
+		}
 	}
 
 }

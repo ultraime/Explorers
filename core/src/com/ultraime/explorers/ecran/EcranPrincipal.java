@@ -3,20 +3,31 @@ package com.ultraime.explorers.ecran;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.ultraime.game.gdxtraime.composant.Bouton;
 import com.ultraime.game.gdxtraime.ecran.Ecran;
 import com.ultraime.game.gdxtraime.ecran.EcranManagerAbstract;
+import com.ultraime.game.gdxtraime.monde.CameraGame;
 import com.ultraime.game.gdxtraime.parametrage.Parametre;
 
 /**
- * @author ultraime
- * Ecran de base pour d�marrer une partie
+ * @author ultraime Ecran de base pour d�marrer une partie
  */
 public class EcranPrincipal extends Ecran {
 
-	private Bouton boutonStartPartie;
-	private Bouton boutonLoadPartie;
+	private Stage stage;
+	private Skin skin;
 
 	@Override
 	public void changerEcran(InputMultiplexer inputMultiplexer) {
@@ -27,32 +38,53 @@ public class EcranPrincipal extends Ecran {
 	public void create(final EcranManagerAbstract ecranManager) {
 		this.ecranManager = (EcranManager) ecranManager;
 		this.batch = new SpriteBatch();
+		// old method
+		String label = Parametre.bundle.get("txt.menu.start");
 
-		String label2 = Parametre.bundle.get("txt.menu.start");
-		this.boutonStartPartie = new Bouton(Parametre.x(752), Parametre.y(600), Parametre.x(300), Parametre.y(50),
-				label2, Bouton.CLASSIQUE);
+		stage = new Stage();
 
-		String label3 = Parametre.bundle.get("txt.menu.load");
-		this.boutonLoadPartie = new Bouton(Parametre.x(752), Parametre.y(420), Parametre.x(300), Parametre.y(50),
-				label3, Bouton.CLASSIQUE);
+		skin = new Skin(Gdx.files.internal("ui-editor/neonuiblue/neonuiblue.json"));
+		stage = new Stage(new ScreenViewport());
 
+		TextButton button = new TextButton(label, skin);
+//		button.getLabel().setFontScale(2, 2);
+		button.setWidth(250);
+		button.setHeight(50);
+
+//		button.setPosition(752, 600);
+		final EcranManager ecran = (EcranManager) ecranManager;
+		button.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				ecran.ecranTest.create(ecran);
+				ecran.initialiserEcran(ecran.ecranTest);
+			}
+		});
+
+		// table
+		Table table = new Table();
+		table.setFillParent(true);
+		table.setDebug(Parametre.MODE_DEBUG);
+
+		table.add(button).width(button.getWidth()).height(button.getHeight());
+		stage.addActor(table);
+
+//		stage.addActor(button);
+		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
 	public void render() {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		this.batch.begin();
-		this.boutonStartPartie.render(batch);
-		this.boutonLoadPartie.render(batch);
-		this.batch.end();
+
+		stage.act(Gdx.graphics.getDeltaTime());
+		stage.draw();
 	}
 
 	@Override
 	public void dispose() {
 		this.batch.dispose();
-		this.boutonStartPartie.dispose();
-		this.boutonLoadPartie.dispose();
 	}
 
 	@Override
@@ -75,22 +107,11 @@ public class EcranPrincipal extends Ecran {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
-		if (this.boutonStartPartie.isClique(screenX, screenY)) {
-			this.ecranManager.ecranTest.create(this.ecranManager);
-			//TODO charger ecran de jeu
-			this.ecranManager.initialiserEcran(this.ecranManager.ecranTest);
-//			this.ecranManager.initialiserEcran(this.ecranManager.ecranTestUI);
-		}
-		this.boutonLoadPartie.isClique(screenX, screenY);
-
 		return false;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		this.boutonStartPartie.touchUP(screenX, screenY);
-		this.boutonLoadPartie.touchUP(screenX, screenY);
 		return false;
 	}
 
@@ -101,14 +122,17 @@ public class EcranPrincipal extends Ecran {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		this.boutonStartPartie.isOver(screenX, screenY);
-		this.boutonLoadPartie.isOver(screenX, screenY);
 		return false;
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
 		return false;
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		stage.getViewport().update(width, height, true);
 	}
 
 }

@@ -15,6 +15,7 @@ public class ArmesManager {
 	public static Arme creerPistolet() {
 		pistolet.habiliterGeneral.degat = 1;
 		pistolet.habiliterGeneral.vitesse = 10f;
+		pistolet.habiliterGeneral.portee = 5f;
 		return new Arme(pistolet);
 	}
 }

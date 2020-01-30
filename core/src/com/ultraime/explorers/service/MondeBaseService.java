@@ -17,12 +17,14 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.ultraime.explorers.Evenement.Interrupteur;
 import com.ultraime.explorers.Evenement.Porte;
+import com.ultraime.explorers.entite.Balle;
 import com.ultraime.explorers.entite.EntiteAlien;
 import com.ultraime.explorers.entite.EntiteJoueur;
 import com.ultraime.game.gdxtraime.Evenement.Evenement;
 import com.ultraime.game.gdxtraime.carte.Carte;
-import com.ultraime.game.gdxtraime.entite.Entite;
 import com.ultraime.game.gdxtraime.entite.EntiteStatic;
+import com.ultraime.game.gdxtraime.entite.EntiteVivante;
+import com.ultraime.game.gdxtraime.entite.metier.HabiliterGeneral;
 import com.ultraime.game.gdxtraime.monde.CameraGame;
 import com.ultraime.game.gdxtraime.monde.Monde;
 import com.ultraime.game.gdxtraime.parametrage.Parametre;
@@ -108,25 +110,45 @@ public class MondeBaseService {
 
 			private Boolean contactBullets(final Fixture fixtureA, final Fixture fixtureB) {
 				Boolean isContact = false;
+				EntiteVivante balle = null;
+				Object cible = null;
 				if (fixtureA.getDensity() != -1f && fixtureB.getDensity() != -1f) {
 					if (monde.bodiesBullets.contains(fixtureA.getBody())) {
 						if (!(fixtureB.getBody().getUserData() instanceof Evenement)
 								|| ((fixtureB.getBody().getUserData() instanceof Evenement)
 										&& !fixtureB.getBody().getFixtureList().get(0).isSensor())) {
-							Entite e = (Entite) fixtureB.getBody().getUserData();
-							e.isDeleted = true;
-							isContact = true;
+							balle = (EntiteVivante) fixtureA.getBody().getUserData();
+							cible = fixtureB.getBody().getUserData();
 						}
-					} else if (monde.bodiesBullets.contains(fixtureB.getBody())) {
+					}
+					else if (monde.bodiesBullets.contains(fixtureB.getBody())) {
 						if (!(fixtureA.getBody().getUserData() instanceof Evenement)
 								|| ((fixtureA.getBody().getUserData() instanceof Evenement)
 										&& !fixtureA.getBody().getFixtureList().get(0).isSensor())) {
-							Entite e = (Entite) fixtureB.getBody().getUserData();
-							e.isDeleted = true;
-							isContact = true;
+							balle = (EntiteVivante) fixtureB.getBody().getUserData();
+							cible = fixtureA.getBody().getUserData();
+
 						}
 					}
 				}
+
+				if (balle != null) {
+					balle.isDeleted = true;
+					isContact = true;
+					if (cible instanceof EntiteAlien) {
+						EntiteAlien entiteAlien = (EntiteAlien) cible;
+						int sante[] = entiteAlien.habiliter.sante;
+						sante[HabiliterGeneral.GAIN] = -balle.habiliter.degat;
+//						System.err.println("MondeBaseService.java : "+sante[HabiliterGeneral.ACTUEL]);
+//						System.err.println("MondeBaseService.java : "+sante[HabiliterGeneral.GAIN]);
+//						System.err.println("MondeBaseService.java :------------------------------------");
+						entiteAlien.habiliter.gererGain(sante);
+						if(sante[HabiliterGeneral.ACTUEL] == 0) {
+							entiteAlien.isDeleted = true;
+						}
+					}
+				}
+
 				return isContact;
 			}
 
@@ -234,7 +256,7 @@ public class MondeBaseService {
 		this.monde.batch.begin();
 		this.monde.renderBodies();
 		this.monde.renderEvent();
-
+		manageBalle();
 		this.monde.removeDeathEntite(this.monde.bodiesEntiteVivant);
 		this.monde.removeDeathEntite(this.monde.bodiesBullets);
 
@@ -250,6 +272,18 @@ public class MondeBaseService {
 		}
 		this.monde.batch.end();
 
+	}
+
+	private void manageBalle() {
+		ArrayList<Body> bodiesBullets = this.monde.bodiesBullets;
+		for(int i = 0; i < bodiesBullets.size();i++) {
+			Balle balle = (Balle) bodiesBullets.get(i).getUserData();
+			boolean isPorteeAteinte = balle.isPorteeAteinte(bodiesBullets.get(i).getPosition());
+			if(isPorteeAteinte) {
+				balle.isDeleted = true;
+			}
+		}
+		
 	}
 
 	/**

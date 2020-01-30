@@ -38,6 +38,8 @@ public abstract class Ecran implements InputProcessor {
 	 * dÃ©truit l'Ã©cran
 	 */
 	public abstract void dispose();
+	
+	public abstract void resize(int width, int height);
 
 	/**
 	 * touche du clavier up

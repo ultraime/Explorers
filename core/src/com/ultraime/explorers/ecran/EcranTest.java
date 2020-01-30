@@ -3,6 +3,7 @@ package com.ultraime.explorers.ecran;
 import java.util.List;
 import java.util.Optional;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,7 +21,6 @@ import com.ultraime.game.gdxtraime.ecran.Ecran;
 import com.ultraime.game.gdxtraime.ecran.EcranManagerAbstract;
 import com.ultraime.game.gdxtraime.entite.EntiteVivante;
 import com.ultraime.game.gdxtraime.monde.CameraGame;
-import com.ultraime.game.gdxtraime.parametrage.Parametre;
 
 /**
  * @author ultraime Ecran pour des test
@@ -49,7 +49,8 @@ public class EcranTest extends Ecran {
 		this.ecranManager = (EcranManager) ecranManager;
 		this.positionSouris = new Vector2(0, 0);
 		this.batch = new SpriteBatch();
-		this.cameraGame = new CameraGame(Parametre.LARGEUR_ECRAN, Parametre.HAUTEUR_ECRAN);
+		this.cameraGame = new CameraGame(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+//		this.cameraGame = new CameraGame(Parametre.LARGEUR_ECRAN, Parametre.HAUTEUR_ECRAN);
 		this.cameraGame.camera.position.x = 0;
 		this.cameraGame.camera.position.y = 0;
 
@@ -64,10 +65,9 @@ public class EcranTest extends Ecran {
 		EntiteVivante entiteVivante = JoueurService.creerEntiteVivante(position);
 		this.joueurService = new JoueurService(this.mondeService.monde.addPersonnageMuscle(entiteVivante));
 
-		//création des entites
+		// création des entites
 		this.entiteService = new EntiteService(this.mondeService.monde);
 		this.entiteService.initAlien(position);
-
 
 		// creation des portes et interrupteur.
 		List<MapObject> eventInterupteur = this.mondeService.monde.carte.recupererEvents("event", "interrupteur");
@@ -195,8 +195,12 @@ public class EcranTest extends Ecran {
 	public boolean scrolled(int amount) {
 		this.cameraGame.zoom(amount);
 		this.mondeService.monde.zoomCameraDebug(amount);
-		;
 		return false;
+	}
+
+	@Override
+	public void resize(int width, int height) {
+
 	}
 
 }

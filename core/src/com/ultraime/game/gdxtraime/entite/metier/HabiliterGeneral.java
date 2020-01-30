@@ -18,7 +18,10 @@ public class HabiliterGeneral implements Serializable {
 	public float saut = 270f;
 	
 	//stat non obligatoire
-	public float degat = 1f;
+	public int degat = 1;
+	
+	//la portée
+	public float portee = 10f;
 	
 	//stat modulable
 	public int sante[];
@@ -43,6 +46,12 @@ public class HabiliterGeneral implements Serializable {
 		energie[GAIN] = new Integer(habiliter.energie[GAIN]);
 		energie[ACTUEL] = new Integer(habiliter.energie[ACTUEL]);
 		energie[MAX] = new Integer(habiliter.energie[MAX]);
+		
+		vitesse = habiliter.vitesse;
+		degat = habiliter.degat;
+		saut = habiliter.saut;
+		acceleration = habiliter.acceleration;
+		portee = habiliter.portee;
 	}
 
 	public void gererGain(int[] stat) {

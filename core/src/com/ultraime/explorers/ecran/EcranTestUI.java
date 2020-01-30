@@ -5,7 +5,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -23,11 +22,11 @@ import com.ultraime.game.gdxtraime.ecran.EcranManagerAbstract;
 public class EcranTestUI extends Ecran {
 
 	Stage stage;
-	TextButton button;
+//	TextButton button;
 	TextButtonStyle textButtonStyle;
 	BitmapFont font;
 	Skin skin;
-	TextureAtlas buttonAtlas;
+//	TextureAtlas buttonAtlas;
 
 	@Override
 	public void changerEcran(InputMultiplexer inputMultiplexer) {
@@ -38,30 +37,28 @@ public class EcranTestUI extends Ecran {
 	public void create(final EcranManagerAbstract ecranManager) {
 		this.ecranManager = (EcranManager) ecranManager;
 		this.batch = new SpriteBatch();
-		
+
 		stage = new Stage();
-		
+
 		font = new BitmapFont();
 		skin = new Skin(Gdx.files.internal("ui-editor/test/test.json"));
 		stage = new Stage(new ScreenViewport());
-		
-		TextButton button = new TextButton("click me ",skin);
+
+		TextButton button = new TextButton("click me ", skin);
 		button.setWidth(200);
 		button.setHeight(50);
-		
+
 		final Dialog dialog = new Dialog("Click on me :O", skin);
-		
-		button.addListener( new ClickListener() {
-		    @Override
-		    public void clicked(InputEvent event, float x, float y) {
-		        dialog.show(stage);
-		    }
-		} );
-		
-		
+
+		button.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				dialog.show(stage);
+			}
+		});
+
 		stage.addActor(button);
-		
-		
+
 		Gdx.input.setInputProcessor(stage);
 	}
 
@@ -69,10 +66,8 @@ public class EcranTestUI extends Ecran {
 	public void render() {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//		this.batch.begin();
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-//		this.batch.end();
 	}
 
 	@Override
@@ -122,6 +117,10 @@ public class EcranTestUI extends Ecran {
 	@Override
 	public boolean scrolled(int amount) {
 		return false;
+	}
+
+	@Override
+	public void resize(int width, int height) {
 	}
 
 }
