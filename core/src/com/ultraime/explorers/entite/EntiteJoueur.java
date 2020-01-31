@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.ultraime.explorers.objet.ArmesManager;
+import com.ultraime.game.gdxtraime.entite.metier.HabiliterGeneral;
 import com.ultraime.game.gdxtraime.objet.Arme;
 
 public class EntiteJoueur extends EntitePersonnage {
@@ -18,6 +19,15 @@ public class EntiteJoueur extends EntitePersonnage {
 	public EntiteJoueur(float x, float y, float radius, short idDgroupe) {
 		super(x, y, radius, idDgroupe);
 		arme = ArmesManager.creerPistolet();
+		habiliter.sante[HabiliterGeneral.ACTUEL] = 50;
+		habiliter.sante[HabiliterGeneral.MAX] = 50;
+		
+		habiliter.energie[HabiliterGeneral.ACTUEL] = 100;
+		habiliter.energie[HabiliterGeneral.MAX] = 100;
+		
+		habiliter.combustible[HabiliterGeneral.ACTUEL] = 100;
+		habiliter.combustible[HabiliterGeneral.MAX] = 100;
+		
 	}
 
 	/**

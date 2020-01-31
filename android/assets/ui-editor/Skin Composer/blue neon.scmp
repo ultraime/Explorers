@@ -3406,7 +3406,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
 						name: font
 						optional: false
-						value: font
+						value: font-over
 					}
 					fontColor: {
 						class: com.ray3k.skincomposer.data.StyleProperty

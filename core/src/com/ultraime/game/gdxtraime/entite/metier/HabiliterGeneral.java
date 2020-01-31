@@ -26,10 +26,15 @@ public class HabiliterGeneral implements Serializable {
 	//stat modulable
 	public int sante[];
 	public int energie[];
-
+	public int oxygene[];
+	public int combustible[];
+	
+	
 	public HabiliterGeneral() {
 		sante = new int[3];
 		energie = new int[3];
+		oxygene =  new int[3];
+		combustible =  new int[3];
 	}
 
 	public HabiliterGeneral(final HabiliterGeneral habiliter) {
@@ -46,6 +51,14 @@ public class HabiliterGeneral implements Serializable {
 		energie[GAIN] = new Integer(habiliter.energie[GAIN]);
 		energie[ACTUEL] = new Integer(habiliter.energie[ACTUEL]);
 		energie[MAX] = new Integer(habiliter.energie[MAX]);
+		
+		oxygene[GAIN] = new Integer(habiliter.oxygene[GAIN]);
+		oxygene[ACTUEL] = new Integer(habiliter.oxygene[ACTUEL]);
+		oxygene[MAX] = new Integer(habiliter.oxygene[MAX]);
+		
+		combustible[GAIN] = new Integer(habiliter.combustible[GAIN]);
+		combustible[ACTUEL] = new Integer(habiliter.combustible[ACTUEL]);
+		combustible[MAX] = new Integer(habiliter.combustible[MAX]);
 		
 		vitesse = habiliter.vitesse;
 		degat = habiliter.degat;
