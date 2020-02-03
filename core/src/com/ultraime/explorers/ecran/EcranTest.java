@@ -21,6 +21,7 @@ import com.ultraime.game.gdxtraime.ecran.Ecran;
 import com.ultraime.game.gdxtraime.ecran.EcranManagerAbstract;
 import com.ultraime.game.gdxtraime.entite.EntiteVivante;
 import com.ultraime.game.gdxtraime.monde.CameraGame;
+import com.ultraime.game.gdxtraime.parametrage.Parametre;
 
 /**
  * @author ultraime Ecran pour des test
@@ -46,6 +47,10 @@ public class EcranTest extends Ecran {
 	@Override
 	public void create(final EcranManagerAbstract ecranManager) {
 		// creation des elements de gestion d'affichage
+		  long startTime = System.currentTimeMillis();
+		if(Parametre.MODE_DEBUG) {
+			System.out.println("chargement : Debut");
+		}
 		this.ecranManager = (EcranManager) ecranManager;
 		this.positionSouris = new Vector2(0, 0);
 		this.batch = new SpriteBatch();
@@ -55,25 +60,42 @@ public class EcranTest extends Ecran {
 		this.cameraGame.camera.position.y = 0;
 
 		// creation du monde
+		if(Parametre.MODE_DEBUG) {
+			System.out.println("chargement : Creation ecran/camea en "+ (System.currentTimeMillis() - startTime) + " ms") ;
+			startTime = System.currentTimeMillis();
+		}
 		this.mondeService = new MondeBaseService();
-
+	
 		// creations des murs.
 		this.mondeService.initialiserCollision();
-
+		if(Parametre.MODE_DEBUG) {
+			System.out.println("chargement : Creation du monde en "+ (System.currentTimeMillis() - startTime) + " ms") ;
+			startTime = System.currentTimeMillis();
+		}
 		// Creation du joueur
 		final Vector2 position = this.mondeService.monde.carte.recupererPositionDepart("event", "centre");
 		EntiteVivante entiteVivante = JoueurService.creerEntiteVivante(position);
 		this.joueurService = new JoueurService(this.mondeService.monde.addPersonnageMuscle(entiteVivante));
-
+		if(Parametre.MODE_DEBUG) {
+			System.out.println("chargement : Creation du joueur en "+ (System.currentTimeMillis() - startTime) + " ms") ;
+			startTime = System.currentTimeMillis();
+		}
 		// création des entites
 		this.entiteService = new EntiteService(this.mondeService.monde);
 		this.entiteService.initAlien(position);
-
+		if(Parametre.MODE_DEBUG) {
+			System.out.println("chargement : Creation des entite en "+ (System.currentTimeMillis() - startTime) + " ms") ;
+			startTime = System.currentTimeMillis();
+		}
 		// creation des portes et interrupteur.
 		List<MapObject> eventInterupteur = this.mondeService.monde.carte.recupererEvents("event", "interrupteur");
 		List<MapObject> eventPorte = this.mondeService.monde.carte.recupererEvents("event", "porte");
 
 		this.mondeService.creerPorte(eventInterupteur, eventPorte);
+		if(Parametre.MODE_DEBUG) {
+			System.out.println("chargement : Creation des events en "+ (System.currentTimeMillis() - startTime) + " ms") ;
+			startTime = System.currentTimeMillis();
+		}
 
 	}
 
