@@ -8,22 +8,27 @@ public class Noeud implements Serializable, Comparable<Noeud> {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Noeud(final int x, final int y, final double cout) {
-		this.x = x;
-		this.y = y;
+	public Noeud(final int x2, final int y2, final double cout) {
+		this.x = x2;
+		this.y = y2;
 		this.cout = cout;
 		this.isVisit = false;
 	}
-
+		
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "[x: "+x+"] [y: "+y+"]";
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + x;
-		result = prime * result + y;
+		result = (int) (prime * result + x);
+		result = (int) (prime * result + y);
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

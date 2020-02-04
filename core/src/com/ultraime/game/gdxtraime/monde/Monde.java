@@ -40,7 +40,7 @@ public class Monde {
 	public ArrayList<Body> bodiesEvent = new ArrayList<Body>();
 
 	// les entites static sont une liste de body + rectangle
-	private List<Rectangle> rectangleBodies;
+	public List<Rectangle> rectangleBodies;
 
 	public Box2DDebugRenderer debugRenderer;
 //	public CameraGame cameraDebug = new CameraGame(Parametre.LARGEUR_ECRAN / MULTIPLICATEUR,
