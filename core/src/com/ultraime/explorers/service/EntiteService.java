@@ -76,10 +76,10 @@ public class EntiteService {
 		Noeud depNoeud = new Noeud((int) bodyEntite.getPosition().x, (int) bodyEntite.getPosition().y, 0);
 		Noeud arrNoeud = new Noeud((int) bodyJoueur.getPosition().x, (int) bodyJoueur.getPosition().y, 0);
 		try {
-			if (chemin == null) {
+			if (chemin == null || (chemin != null && chemin.isEmpty())) {
 				chemin = aetoileNew.cheminPlusCourt(arrNoeud, depNoeud, 1000);
 			}
-			if (chemin != null) {
+			if (chemin != null && !chemin.isEmpty()) {
 				Noeud way = chemin.getFirst();
 				Vector3 targetPos = new Vector3(way.x, way.y, 0);
 				float angle = new Vector2(targetPos.x, targetPos.y).sub(bodyEntite.getPosition()).angleRad();
