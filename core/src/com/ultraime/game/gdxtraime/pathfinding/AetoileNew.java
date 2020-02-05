@@ -114,7 +114,7 @@ public class AetoileNew implements Serializable {
 		// avant de commencer on regarde si la destination est vraiment
 		// accesible
 		ArrayDeque<Noeud> listDeNoeudRetour = new ArrayDeque<Noeud>();
-		if (!isCollision(objectif)) {
+		if (!isCollision(objectif) || true) {
 			int iSecurity = 0;
 			final int SECURITY = security;
 			final int POSITIONARRIVE = 1;
@@ -210,7 +210,15 @@ public class AetoileNew implements Serializable {
 
 			List<Rectangle> rectangleBodies = this.monde.rectangleBodies;
 			isCollision = rectangleBodies.stream().anyMatch(r -> Intersector.overlaps(circleBody, r));
-
+			
+			for(int i = 0; i < rectangleBodies.size();i++){
+				if(Intersector.overlaps(circleBody, rectangleBodies.get(i))) {
+					Rectangle r = rectangleBodies.get(i);
+				}
+			}
+		
+			
+			
 		} catch (GdxRuntimeException e) {
 			if (Parametre.MODE_DEBUG) {
 				e.printStackTrace();

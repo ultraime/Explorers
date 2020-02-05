@@ -19,6 +19,7 @@ import com.ultraime.game.gdxtraime.pathfinding.Noeud;
 public class EntiteService {
 
 	private Monde monde;
+	ArrayDeque<Noeud> chemin;
 
 	public EntiteService(final Monde monde) {
 		this.monde = monde;
@@ -72,27 +73,32 @@ public class EntiteService {
 
 //		//test du A* ici
 		AetoileNew aetoileNew = new AetoileNew(monde, bodyEntite);
-		Noeud depNoeud = new Noeud((int)bodyEntite.getPosition().x,(int)bodyEntite.getPosition().y,0);
-		Noeud arrNoeud = new Noeud((int)bodyJoueur.getPosition().x,(int)bodyJoueur.getPosition().y,0);
+		Noeud depNoeud = new Noeud((int) bodyEntite.getPosition().x, (int) bodyEntite.getPosition().y, 0);
+		Noeud arrNoeud = new Noeud((int) bodyJoueur.getPosition().x, (int) bodyJoueur.getPosition().y, 0);
 		try {
-			ArrayDeque<Noeud>  chemin = aetoileNew.cheminPlusCourt(depNoeud, arrNoeud, 1000);
-			if(chemin != null) {
-				Noeud way = chemin.removeFirst();
+			if (chemin == null) {
+				chemin = aetoileNew.cheminPlusCourt(arrNoeud, depNoeud, 1000);
+			}
+			if (chemin != null) {
+				Noeud way = chemin.getFirst();
 				Vector3 targetPos = new Vector3(way.x, way.y, 0);
 				float angle = new Vector2(targetPos.x, targetPos.y).sub(bodyEntite.getPosition()).angleRad();
 				float velocity = ev.habiliter.vitesse;
 				float velX = MathUtils.cos(angle) * velocity;
 				float velY = MathUtils.sin(angle) * velocity;
 				bodyEntite.setLinearVelocity(velX, velY);
-				
+
+				if (  bodyEntite.getPosition().x   > way.x -0.5f && bodyEntite.getPosition().x < way.x  + 0.5f
+						&& bodyEntite.getPosition().y   > way.y -0.5f && bodyEntite.getPosition().y < way.y  + 0.5f) {
+					chemin.removeFirst();
+				}
+
 			}
 		} catch (AetoileException e) {
 			e.printStackTrace();
 		} catch (AetoileDestinationBlockException e) {
 			e.printStackTrace();
 		}
-		
-		
 
 	}
 

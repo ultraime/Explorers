@@ -119,6 +119,9 @@ public class Monde {
 		MondeBodyService.creerRectangleStatic(world, x, y, largeur, hauteur, entiteStatic);
 
 		Rectangle rectangle = new Rectangle(x, y, entiteStatic.getLargeur() / 2f, entiteStatic.getHauteur() / 2f);
+		
+		rectangle.x = (int) rectangle.x;
+		rectangle.y = (int) rectangle.y;
 		rectangleBodies.add(rectangle);
 	}
 
