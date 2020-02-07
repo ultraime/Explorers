@@ -57,22 +57,22 @@ public class MondeBaseService {
 
 			private boolean contactZoneAlien(Fixture fixtureA, Fixture fixtureB) {
 				boolean isContact = false;
-				EntiteJoueur entiteJoueur = null;
+				Body bodyEntiteJoueur = null;
 				EntiteAlien entiteAlien = null;
 				if (fixtureA.getDensity() == -1 && fixtureA.getBody().getUserData() instanceof EntiteAlien) {
 					if (fixtureB.getBody().getUserData() instanceof EntiteJoueur) {
-						entiteJoueur = (EntiteJoueur) fixtureB.getBody().getUserData();
+						bodyEntiteJoueur = fixtureB.getBody();
 						entiteAlien = (EntiteAlien) fixtureA.getBody().getUserData();
 					}
 				} else if (fixtureB.getDensity() == -1 && fixtureB.getBody().getUserData() instanceof EntiteAlien) {
 					if (fixtureA.getBody().getUserData() instanceof EntiteJoueur) {
 
-						entiteJoueur = (EntiteJoueur) fixtureA.getBody().getUserData();
+						bodyEntiteJoueur = fixtureA.getBody();
 						entiteAlien = (EntiteAlien) fixtureB.getBody().getUserData();
 					}
 				}
 				if (entiteAlien != null) {
-					entiteAlien.entiteJoueursDansZone.add(entiteJoueur);
+					entiteAlien.bodyEntiteJoueursDansZone.add(bodyEntiteJoueur);
 					isContact = true;
 				}
 
@@ -120,8 +120,7 @@ public class MondeBaseService {
 							balle = (EntiteVivante) fixtureA.getBody().getUserData();
 							cible = fixtureB.getBody().getUserData();
 						}
-					}
-					else if (monde.bodiesBullets.contains(fixtureB.getBody())) {
+					} else if (monde.bodiesBullets.contains(fixtureB.getBody())) {
 						if (!(fixtureA.getBody().getUserData() instanceof Evenement)
 								|| ((fixtureA.getBody().getUserData() instanceof Evenement)
 										&& !fixtureA.getBody().getFixtureList().get(0).isSensor())) {
@@ -143,7 +142,7 @@ public class MondeBaseService {
 //						System.err.println("MondeBaseService.java : "+sante[HabiliterGeneral.GAIN]);
 //						System.err.println("MondeBaseService.java :------------------------------------");
 						entiteAlien.habiliter.gererGain(sante);
-						if(sante[HabiliterGeneral.ACTUEL] == 0) {
+						if (sante[HabiliterGeneral.ACTUEL] == 0) {
 							entiteAlien.isDeleted = true;
 						}
 					}
@@ -164,23 +163,23 @@ public class MondeBaseService {
 
 			private boolean EndContactZoneAlien(Fixture fixtureA, Fixture fixtureB) {
 				boolean isEndContact = false;
-				EntiteJoueur entiteJoueur = null;
+				Body bodyEntiteJoueur = null;
 				EntiteAlien entiteAlien = null;
 				if (fixtureA.getDensity() == -1 && fixtureA.getBody().getUserData() instanceof EntiteAlien) {
 					if (fixtureB.getBody().getUserData() instanceof EntiteJoueur) {
 						isEndContact = true;
-						entiteJoueur = (EntiteJoueur) fixtureB.getBody().getUserData();
+						bodyEntiteJoueur = fixtureB.getBody();
 						entiteAlien = (EntiteAlien) fixtureA.getBody().getUserData();
 					}
 				} else if (fixtureB.getDensity() == -1 && fixtureB.getBody().getUserData() instanceof EntiteAlien) {
 					if (fixtureA.getBody().getUserData() instanceof EntiteJoueur) {
 						isEndContact = true;
-						entiteJoueur = (EntiteJoueur) fixtureA.getBody().getUserData();
+						bodyEntiteJoueur = fixtureA.getBody();
 						entiteAlien = (EntiteAlien) fixtureB.getBody().getUserData();
 					}
 				}
 				if (isEndContact) {
-					entiteAlien.entiteJoueursDansZone.remove(entiteJoueur);
+					entiteAlien.bodyEntiteJoueursDansZone.remove(bodyEntiteJoueur);
 				}
 
 				return isEndContact;
@@ -276,14 +275,14 @@ public class MondeBaseService {
 
 	private void manageBalle() {
 		ArrayList<Body> bodiesBullets = this.monde.bodiesBullets;
-		for(int i = 0; i < bodiesBullets.size();i++) {
+		for (int i = 0; i < bodiesBullets.size(); i++) {
 			Balle balle = (Balle) bodiesBullets.get(i).getUserData();
 			boolean isPorteeAteinte = balle.isPorteeAteinte(bodiesBullets.get(i).getPosition());
-			if(isPorteeAteinte) {
+			if (isPorteeAteinte) {
 				balle.isDeleted = true;
 			}
 		}
-		
+
 	}
 
 	/**

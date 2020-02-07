@@ -16,6 +16,7 @@ import com.ultraime.explorers.Evenement.Porte;
 import com.ultraime.explorers.service.EntiteService;
 import com.ultraime.explorers.service.JoueurService;
 import com.ultraime.explorers.service.MondeBaseService;
+import com.ultraime.explorers.thread.ThreadManagement;
 import com.ultraime.game.gdxtraime.Evenement.Evenement;
 import com.ultraime.game.gdxtraime.ecran.Ecran;
 import com.ultraime.game.gdxtraime.ecran.EcranManagerAbstract;
@@ -31,7 +32,7 @@ public class EcranTest extends Ecran {
 	public MondeBaseService mondeService;
 	public JoueurService joueurService;
 	public EntiteService entiteService;
-
+	public ThreadManagement threadManagement;
 	private CameraGame cameraGame;
 	private Vector2 positionSouris;
 
@@ -97,6 +98,15 @@ public class EcranTest extends Ecran {
 		if (Parametre.MODE_DEBUG) {
 			System.out
 					.println("chargement : Creation des events en " + (System.currentTimeMillis() - startTime) + " ms");
+			startTime = System.currentTimeMillis();
+		}
+		
+		//thread
+		threadManagement = new ThreadManagement();
+		threadManagement.initAllThread(this.mondeService.monde);
+		if (Parametre.MODE_DEBUG) {
+			System.out
+					.println("chargement : Creation des threadManagement en " + (System.currentTimeMillis() - startTime) + " ms");
 			startTime = System.currentTimeMillis();
 		}
 
@@ -210,7 +220,6 @@ public class EcranTest extends Ecran {
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 		joueurService.rotation(screenX, screenY, cameraGame.camera);
-//		joueurService.rotation(screenX, screenY, this.mondeService.monde.cameraDebug);
 		positionSouris.x = screenX;
 		positionSouris.y = screenY;
 		return false;

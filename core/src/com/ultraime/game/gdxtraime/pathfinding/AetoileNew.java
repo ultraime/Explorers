@@ -51,7 +51,7 @@ public class AetoileNew implements Serializable {
 
 		EntiteVivante entiteVivante = (EntiteVivante) body.getUserData();
 		if (entiteVivante.typeShape == TypeShape.CERCLE) {
-			circleBody = new Circle(0, 0, 0.4f);
+			circleBody = new Circle(0, 0, 0.7f);
 		}
 
 	}
@@ -114,7 +114,7 @@ public class AetoileNew implements Serializable {
 		// avant de commencer on regarde si la destination est vraiment
 		// accesible
 		ArrayDeque<Noeud> listDeNoeudRetour = new ArrayDeque<Noeud>();
-		if (!isCollision(objectif) || true) {
+		if (!isCollision(objectif) ) {
 			int iSecurity = 0;
 			final int SECURITY = security;
 			final int POSITIONARRIVE = 1;
@@ -193,6 +193,8 @@ public class AetoileNew implements Serializable {
 			}
 
 			if (iSecurity >= SECURITY || listDeNoeudRetour.size() == 0) {
+				System.err.println("iSecurity : "+iSecurity);
+				System.err.println("listDeNoeudRetour.size() : "+listDeNoeudRetour.size());
 				throw new AetoileException();
 			}
 		} else {
@@ -210,14 +212,6 @@ public class AetoileNew implements Serializable {
 
 			List<Rectangle> rectangleBodies = this.monde.rectangleBodies;
 			isCollision = rectangleBodies.stream().anyMatch(r -> Intersector.overlaps(circleBody, r));
-			
-			for(int i = 0; i < rectangleBodies.size();i++){
-				if(Intersector.overlaps(circleBody, rectangleBodies.get(i))) {
-					Rectangle r = rectangleBodies.get(i);
-				}
-			}
-		
-			
 			
 		} catch (GdxRuntimeException e) {
 			if (Parametre.MODE_DEBUG) {
