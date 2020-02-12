@@ -114,7 +114,7 @@ public class AetoileNew implements Serializable {
 		// avant de commencer on regarde si la destination est vraiment
 		// accesible
 		ArrayDeque<Noeud> listDeNoeudRetour = new ArrayDeque<Noeud>();
-		if (!isCollision(objectif) ) {
+		if (!isCollision(objectif)) {
 			int iSecurity = 0;
 			final int SECURITY = security;
 			final int POSITIONARRIVE = 1;
@@ -193,8 +193,8 @@ public class AetoileNew implements Serializable {
 			}
 
 			if (iSecurity >= SECURITY || listDeNoeudRetour.size() == 0) {
-				System.err.println("iSecurity : "+iSecurity);
-				System.err.println("listDeNoeudRetour.size() : "+listDeNoeudRetour.size());
+				System.err.println("iSecurity : " + iSecurity);
+				System.err.println("listDeNoeudRetour.size() : " + listDeNoeudRetour.size());
 				throw new AetoileException();
 			}
 		} else {
@@ -212,7 +212,7 @@ public class AetoileNew implements Serializable {
 
 			List<Rectangle> rectangleBodies = this.monde.rectangleBodies;
 			isCollision = rectangleBodies.stream().anyMatch(r -> Intersector.overlaps(circleBody, r));
-			
+
 		} catch (GdxRuntimeException e) {
 			if (Parametre.MODE_DEBUG) {
 				e.printStackTrace();
@@ -278,6 +278,19 @@ public class AetoileNew implements Serializable {
 
 	public void setCollisionEntiteConstructible(boolean isCollisionEntiteConstructible) {
 		this.isCollisionEntiteConstructible = isCollisionEntiteConstructible;
+	}
+
+	public boolean isProximite(Noeud depNoeud, Noeud arrNoeud) {
+		 boolean isProximite = false;
+		int proximiteX = depNoeud.x - arrNoeud.x;
+		if (proximiteX <= 1 && proximiteX >= -1) {
+			int proximiteY = depNoeud.y - arrNoeud.y;
+			if (proximiteY <= 1 && proximiteY >= -1) {
+				isProximite = true;
+			}
+		}
+
+		return isProximite;
 	}
 
 }

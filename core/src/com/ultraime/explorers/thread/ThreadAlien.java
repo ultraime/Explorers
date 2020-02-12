@@ -23,9 +23,14 @@ public class ThreadAlien implements Runnable {
 	public void run() {
 		do {
 			if (!Parametre.PAUSE) {
-				List<Body> aliens = bodiesEntiteVivante.stream().filter(b -> (b.getUserData() instanceof EntiteAlien))
-						.collect(Collectors.toList());
-				aliens.stream().forEach(a -> ((EntiteAlien) a.getUserData()).manage(monde, a));
+					try {
+					List<Body> aliens = bodiesEntiteVivante.stream()
+							.filter(b -> (b.getUserData() instanceof EntiteAlien)).collect(Collectors.toList());
+					aliens.stream().forEach(a -> ((EntiteAlien) a.getUserData()).manage(monde, a));
+					}catch (NullPointerException e) {
+						if(Parametre.MODE_DEBUG)
+							e.printStackTrace();
+					}
 			}
 		} while (Gdx.app != null);
 

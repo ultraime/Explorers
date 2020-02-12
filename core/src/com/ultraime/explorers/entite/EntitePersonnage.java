@@ -45,6 +45,9 @@ public class EntitePersonnage extends EntiteVivante {
 
 	public void stoperEntiter(Body bodyEntite) {
 		bodyEntite.setLinearVelocity(0, 0);
+		if(cheminAParcourir != null) {
+			cheminAParcourir.clear();
+		}
 	}
 
 }
