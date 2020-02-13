@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.ultraime.explorers.entite.EntiteAlien;
-import com.ultraime.game.gdxtraime.entite.metier.HabiliterGeneral;
 import com.ultraime.game.gdxtraime.monde.Monde;
 import com.ultraime.game.gdxtraime.pathfinding.Noeud;
 
@@ -20,11 +19,7 @@ public class EntiteService {
 	}
 
 	public void initAlien(final Vector2 position) {
-		EntiteAlien alien = new EntiteAlien((position.x / Monde.MULTIPLICATEUR) - 10, position.y / Monde.MULTIPLICATEUR,
-				0.4f, (short) -10);
-		alien.habiliter.sante[HabiliterGeneral.MAX] = 3;
-		alien.habiliter.sante[HabiliterGeneral.ACTUEL] = 3;
-		alien.habiliter.vitesse = 3;
+		EntiteAlien alien = EntiteAlien.creerAlienMusclee(position);
 		Body bodyEntite = this.monde.addPAlienMuscle(alien);
 		alien.initAEtoile(monde, bodyEntite);
 	}
@@ -45,7 +40,5 @@ public class EntiteService {
 			}
 		}
 	}
-
-
 
 }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.ultraime.game.gdxtraime.entite.metier.HabiliterGeneral;
 import com.ultraime.game.gdxtraime.monde.Monde;
 import com.ultraime.game.gdxtraime.parametrage.Parametre;
 import com.ultraime.game.gdxtraime.pathfinding.AetoileDestinationBlockException;
@@ -21,8 +22,9 @@ public class EntiteAlien extends EntitePersonnage {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
 	public List<Body> bodyEntiteJoueursDansZone = new ArrayList<Body>();
+
+	public static int IDGROUP = -10;
 
 	public enum ETAT_ALIEN {
 		ATTEND, CHASSE_JOUEUR
@@ -30,8 +32,19 @@ public class EntiteAlien extends EntitePersonnage {
 
 	public ETAT_ALIEN etatAlien = ETAT_ALIEN.ATTEND;
 
+	public static EntiteAlien creerAlienMusclee(Vector2 position) {
+		EntiteAlien alien = new EntiteAlien((position.x / Monde.MULTIPLICATEUR) - 10, position.y / Monde.MULTIPLICATEUR,
+				0.4f, (short) IDGROUP);
+		alien.habiliter.sante[HabiliterGeneral.MAX] = 3;
+		alien.habiliter.sante[HabiliterGeneral.ACTUEL] = 3;
+		alien.habiliter.vitesse = 3;
+
+		return alien;
+	}
+
 	public EntiteAlien(float x, float y, float radius, short idDgroupe) {
 		super(x, y, radius, idDgroupe);
+		IDGROUP--;
 	}
 
 	public void initAEtoile(Monde monde, Body bodyEntite) {
@@ -78,49 +91,53 @@ public class EntiteAlien extends EntitePersonnage {
 	}
 
 	public void chasserJoueur(Monde monde, Body bodyEntite) {
+		try {
+			Body bodyJoueur = bodyEntiteJoueursDansZone.get(0);
+			Noeud depNoeud = new Noeud((int) bodyEntite.getPosition().x, (int) bodyEntite.getPosition().y, 0);
+			Noeud arrNoeud = new Noeud((int) bodyJoueur.getPosition().x, (int) bodyJoueur.getPosition().y, 0);
 
-		Body bodyJoueur = bodyEntiteJoueursDansZone.get(0);
-		Noeud depNoeud = new Noeud((int) bodyEntite.getPosition().x, (int) bodyEntite.getPosition().y, 0);
-		Noeud arrNoeud = new Noeud((int) bodyJoueur.getPosition().x, (int) bodyJoueur.getPosition().y, 0);
+			if (aetoileNew.isProximite(depNoeud, arrNoeud)) {
+				Vector3 targetPos = new Vector3(bodyJoueur.getPosition().x, bodyJoueur.getPosition().y, 0);
+				float angle = new Vector2(targetPos.x, targetPos.y).sub(bodyEntite.getPosition()).angleRad();
+				float velocity = habiliter.vitesse;
+				float velX = MathUtils.cos(angle) * velocity;
+				float velY = MathUtils.sin(angle) * velocity;
+				bodyEntite.setLinearVelocity(velX, velY);
+				cheminAParcourir.clear();
+			} else {
 
-		if(aetoileNew.isProximite(depNoeud,arrNoeud)) {
-			Vector3 targetPos = new Vector3(bodyJoueur.getPosition().x, bodyJoueur.getPosition().y, 0);
-			float angle = new Vector2(targetPos.x, targetPos.y).sub(bodyEntite.getPosition()).angleRad();
-			float velocity = habiliter.vitesse;
-			float velX = MathUtils.cos(angle) * velocity;
-			float velY = MathUtils.sin(angle) * velocity;
-			bodyEntite.setLinearVelocity(velX, velY);
-			cheminAParcourir.clear();
-		} else {
-
-			try {
-				if (cheminAParcourir == null || (cheminAParcourir != null && cheminAParcourir.isEmpty())) {
-					cheminAParcourir = aetoileNew.cheminPlusCourt(arrNoeud, depNoeud, 1000);
-				}
-
-				if (cheminAParcourir != null && !cheminAParcourir.isEmpty()) {
-					Noeud way = cheminAParcourir.getFirst();
-					Vector3 targetPos = new Vector3(way.x, way.y, 0);
-					float angle = new Vector2(targetPos.x, targetPos.y).sub(bodyEntite.getPosition()).angleRad();
-					float velocity = habiliter.vitesse;
-					float velX = MathUtils.cos(angle) * velocity;
-					float velY = MathUtils.sin(angle) * velocity;
-					bodyEntite.setLinearVelocity(velX, velY);
-					float arrondi = 0.7f;
-					if (bodyEntite.getPosition().x > way.x - arrondi && bodyEntite.getPosition().x < way.x + arrondi
-							&& bodyEntite.getPosition().y > way.y - arrondi
-							&& bodyEntite.getPosition().y < way.y + arrondi) {
-						cheminAParcourir.removeFirst();
-//					cheminAParcourir = aetoileNew.cheminPlusCourt(arrNoeud, depNoeud, 1000);
+				try {
+					if (cheminAParcourir == null || (cheminAParcourir != null && cheminAParcourir.isEmpty())) {
+						cheminAParcourir = aetoileNew.cheminPlusCourt(arrNoeud, depNoeud, 1000);
 					}
+
+					if (cheminAParcourir != null && !cheminAParcourir.isEmpty()) {
+						Noeud way = cheminAParcourir.getFirst();
+						Vector3 targetPos = new Vector3(way.x, way.y, 0);
+						float angle = new Vector2(targetPos.x, targetPos.y).sub(bodyEntite.getPosition()).angleRad();
+						float velocity = habiliter.vitesse;
+						float velX = MathUtils.cos(angle) * velocity;
+						float velY = MathUtils.sin(angle) * velocity;
+						bodyEntite.setLinearVelocity(velX, velY);
+						float arrondi = 0.7f;
+						if (bodyEntite.getPosition().x > way.x - arrondi && bodyEntite.getPosition().x < way.x + arrondi
+								&& bodyEntite.getPosition().y > way.y - arrondi
+								&& bodyEntite.getPosition().y < way.y + arrondi) {
+							cheminAParcourir.removeFirst();
+//					cheminAParcourir = aetoileNew.cheminPlusCourt(arrNoeud, depNoeud, 1000);
+						}
+					}
+				} catch (AetoileException e) {
+					if (Parametre.MODE_DEBUG)
+						e.printStackTrace();
+				} catch (AetoileDestinationBlockException e) {
+					if (Parametre.MODE_DEBUG)
+						e.printStackTrace();
 				}
-			} catch (AetoileException e) {
-				if (Parametre.MODE_DEBUG)
-					e.printStackTrace();
-			} catch (AetoileDestinationBlockException e) {
-				if (Parametre.MODE_DEBUG)
-					e.printStackTrace();
 			}
+		} catch (IndexOutOfBoundsException e) {
+			if (Parametre.MODE_DEBUG)
+				e.printStackTrace();
 		}
 	}
 

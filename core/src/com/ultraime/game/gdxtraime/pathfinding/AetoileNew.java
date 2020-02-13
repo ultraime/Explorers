@@ -109,12 +109,13 @@ public class AetoileNew implements Serializable {
 	 * @throws AetoileException
 	 * @throws AetoileDestinationBlockException
 	 */
-	public ArrayDeque<Noeud> cheminPlusCourt(final Noeud objectif, final Noeud depart, final int security)
+	public ArrayDeque<Noeud> cheminPlusCourt(Noeud objectif, final Noeud depart, final int security)
 			throws AetoileException, AetoileDestinationBlockException {
 		// avant de commencer on regarde si la destination est vraiment
 		// accesible
 		ArrayDeque<Noeud> listDeNoeudRetour = new ArrayDeque<Noeud>();
-		if (!isCollision(objectif)) {
+		objectif = isCollisionDestination(objectif);
+		if (!isCollision) {
 			int iSecurity = 0;
 			final int SECURITY = security;
 			final int POSITIONARRIVE = 1;
@@ -206,13 +207,10 @@ public class AetoileNew implements Serializable {
 	private boolean isCollision(final Noeud noeud) {
 		isCollision = false;
 		try {
-
 			circleBody.setX(noeud.x);
 			circleBody.setY(noeud.y);
-
 			List<Rectangle> rectangleBodies = this.monde.rectangleBodies;
 			isCollision = rectangleBodies.stream().anyMatch(r -> Intersector.overlaps(circleBody, r));
-
 		} catch (GdxRuntimeException e) {
 			if (Parametre.MODE_DEBUG) {
 				e.printStackTrace();
@@ -220,6 +218,36 @@ public class AetoileNew implements Serializable {
 			isCollision(noeud);
 		}
 		return isCollision;
+	}
+
+	/**
+	 * pour determiné si la destination final est bloqué ou non
+	 * 
+	 * @param noeud
+	 * @return
+	 */
+	private Noeud isCollisionDestination(final Noeud noeud) {
+		isCollision = isCollision(noeud);
+		if (isCollision) {
+			noeud.x = noeud.x + 1;
+			isCollision = isCollision(noeud);
+		}
+		if (isCollision) {
+			noeud.x = noeud.x - 2;
+			isCollision = isCollision(noeud);
+
+		}
+		if (isCollision) {
+			noeud.x = noeud.x + 2;
+			noeud.x = noeud.y + 1;
+			isCollision = isCollision(noeud);
+		}
+		if (isCollision) {
+			noeud.x = noeud.y - 2;
+			isCollision = isCollision(noeud);
+
+		}
+		return noeud;
 	}
 
 	private boolean isCollisionDiagonalBasGauche(final int x, final int y, final int taillePixel) {
@@ -281,7 +309,7 @@ public class AetoileNew implements Serializable {
 	}
 
 	public boolean isProximite(Noeud depNoeud, Noeud arrNoeud) {
-		 boolean isProximite = false;
+		boolean isProximite = false;
 		int proximiteX = depNoeud.x - arrNoeud.x;
 		if (proximiteX <= 1 && proximiteX >= -1) {
 			int proximiteY = depNoeud.y - arrNoeud.y;

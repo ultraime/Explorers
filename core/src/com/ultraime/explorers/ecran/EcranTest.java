@@ -1,7 +1,9 @@
 package com.ultraime.explorers.ecran;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -11,8 +13,10 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
+import com.ultraime.explorers.Evenement.GenerateurAlien;
 import com.ultraime.explorers.Evenement.Interrupteur;
 import com.ultraime.explorers.Evenement.Porte;
+import com.ultraime.explorers.entite.EntiteAlien;
 import com.ultraime.explorers.service.EntiteService;
 import com.ultraime.explorers.service.JoueurService;
 import com.ultraime.explorers.service.MondeBaseService;
@@ -93,20 +97,24 @@ public class EcranTest extends Ecran {
 		// creation des portes et interrupteur.
 		List<MapObject> eventInterupteur = this.mondeService.monde.carte.recupererEvents("event", "interrupteur");
 		List<MapObject> eventPorte = this.mondeService.monde.carte.recupererEvents("event", "porte");
-
 		this.mondeService.creerPorte(eventInterupteur, eventPorte);
+
+		List<MapObject> eventGenerateurAlien = this.mondeService.monde.carte.recupererEvents("event",
+				"generateur_alien");
+		this.mondeService.creerGenerateurAlien(eventGenerateurAlien);
+
 		if (Parametre.MODE_DEBUG) {
 			System.out
 					.println("chargement : Creation des events en " + (System.currentTimeMillis() - startTime) + " ms");
 			startTime = System.currentTimeMillis();
 		}
-		
-		//thread
+
+		// thread
 		threadManagement = new ThreadManagement();
 		threadManagement.initAllThread(this.mondeService.monde);
 		if (Parametre.MODE_DEBUG) {
-			System.out
-					.println("chargement : Creation des threadManagement en " + (System.currentTimeMillis() - startTime) + " ms");
+			System.out.println("chargement : Creation des threadManagement en "
+					+ (System.currentTimeMillis() - startTime) + " ms");
 			startTime = System.currentTimeMillis();
 		}
 
@@ -115,9 +123,12 @@ public class EcranTest extends Ecran {
 	@Override
 	public void render() {
 		if (!isDispose) {
+	
 			this.mondeService.render(this.joueurService, this.cameraGame);
 			this.mondeService.monde.renderDebug(cameraGame.camera);
-			this.entiteService.manage(this.joueurService.bodyJoueur);
+//			this.entiteService.manage(this.joueurService.bodyJoueur);
+			
+
 		}
 	}
 
@@ -163,6 +174,13 @@ public class EcranTest extends Ecran {
 					ouvertureFermeturePorte(event);
 				}
 			}
+		}
+		if (isTouchPressed(Input.Keys.NUM_1)) {
+			ArrayList<Body> bEvent = this.mondeService.monde.bodiesEvent;
+			List<Body> generateurAlien = bEvent.stream().filter(b -> (b.getUserData() instanceof GenerateurAlien))
+					.collect(Collectors.toList());
+			generateurAlien
+					.forEach(item -> ((GenerateurAlien) item.getUserData()).genererAlien((this.mondeService.monde)));
 		}
 
 	}

@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.ultraime.explorers.Evenement.GenerateurAlien;
 import com.ultraime.explorers.Evenement.Interrupteur;
 import com.ultraime.explorers.Evenement.Porte;
 import com.ultraime.explorers.entite.Balle;
@@ -254,11 +255,13 @@ public class MondeBaseService {
 
 		this.monde.batch.begin();
 		this.monde.renderBodies();
+		
 		this.monde.renderEvent();
 		manageBalle();
 		this.monde.removeDeathEntite(this.monde.bodiesEntiteVivant);
 		this.monde.removeDeathEntite(this.monde.bodiesBullets);
-
+		
+		long debut = System.currentTimeMillis();
 		if (!Parametre.PAUSE) {
 			float deltaTime = Gdx.graphics.getDeltaTime();
 			float frameTime = Math.min(deltaTime, 0.25f);
@@ -270,7 +273,7 @@ public class MondeBaseService {
 			}
 		}
 		this.monde.batch.end();
-
+		System.out.println(System.currentTimeMillis()-debut);
 	}
 
 	private void manageBalle() {
@@ -298,7 +301,6 @@ public class MondeBaseService {
 	}
 
 	public void creerPorte(List<MapObject> eventInterupteur, List<MapObject> eventPorte) {
-
 		List<Interrupteur> interupteurs = new ArrayList<Interrupteur>();
 		for (MapObject object : eventInterupteur) {
 			float posX = (Float) object.getProperties().get("x");
@@ -307,13 +309,10 @@ public class MondeBaseService {
 			final float hauteur = (Float) object.getProperties().get("height");
 			final int id_interrupteur = (Integer) object.getProperties().get("porte");
 			final String direction = (String) object.getProperties().get("direction");
-
 			final Vector2 position = decalageEvenement(direction, object, posX, posY, 2);
-
 			Interrupteur interrupteur = new Interrupteur(position, longueur, hauteur);
 			interrupteur.id = id_interrupteur;
 			this.monde.addEvent(interrupteur);
-
 			interupteurs.add(interrupteur);
 		}
 
@@ -325,24 +324,31 @@ public class MondeBaseService {
 			final int id_porte = (Integer) object.getProperties().get("porte");
 			final String direction = (String) object.getProperties().get("direction");
 			final Vector2 position = decalageEvenement(direction, object, posX, posY, 1);
-
 			Porte porte = new Porte(position, longueur, hauteur, direction);
 			porte.id = id_porte;
-//			Optional<Interrupteur> matchingObject = interupteurs.stream().filter(i -> i.id == id_porte).findFirst();
 			final Body body = this.monde.addEvent(porte);
 			body.getFixtureList().get(0).setSensor(false);
-
-			// porte
-//			float largeur = 1f;
-//			float longueur = 1f;
-//			float posX = x + 0.5f;
-//			float posY = y + 0.5f;
-//			EntiteStatic entiteStatic = new EntiteStatic(posX, posY, largeur, longueur);
-//			monde.addEntiteStatic(entiteStatic);
 		}
 
 	}
 
+	public void creerGenerateurAlien(List<MapObject> eventGenerateurAlien) {
+
+		for (MapObject object : eventGenerateurAlien) {
+			float posX = (Float) object.getProperties().get("x");
+			float posY = (Float) object.getProperties().get("y");
+			final float longueur = (Float) object.getProperties().get("width");
+			final float hauteur = (Float) object.getProperties().get("height");
+
+			final Vector2 position = decalageEvenement("", object, posX, posY, 1);
+			GenerateurAlien generateurAlien = new GenerateurAlien(position, longueur, hauteur);
+			this.monde.addEvent(generateurAlien);
+		}
+
+
+
+	}
+	
 	/**
 	 * @param object
 	 * @param posX

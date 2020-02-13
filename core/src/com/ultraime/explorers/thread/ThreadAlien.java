@@ -1,6 +1,7 @@
 package com.ultraime.explorers.thread;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,8 +31,12 @@ public class ThreadAlien implements Runnable {
 					}catch (NullPointerException e) {
 						if(Parametre.MODE_DEBUG)
 							e.printStackTrace();
+					}catch (ConcurrentModificationException e) {
+//						if(Parametre.MODE_DEBUG)
+//							e.printStackTrace();
 					}
 			}
+	
 		} while (Gdx.app != null);
 
 	}
