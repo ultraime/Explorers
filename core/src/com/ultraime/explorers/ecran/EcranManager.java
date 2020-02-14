@@ -44,10 +44,10 @@ public class EcranManager extends EcranManagerAbstract {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		ecranActuel.render();
 
-		if (Parametre.MODE_DEBUG && this.ecranDebug != null) {
-			this.ecranDebug.render();
-		}
-
+//		if (Parametre.MODE_DEBUG && this.ecranDebug != null) {
+//			this.ecranDebug.render();
+//		}
+		this.ecranDebug.render();
 	}
 
 	@Override

@@ -261,19 +261,19 @@ public class MondeBaseService {
 		this.monde.removeDeathEntite(this.monde.bodiesEntiteVivant);
 		this.monde.removeDeathEntite(this.monde.bodiesBullets);
 		
-		long debut = System.currentTimeMillis();
+
 		if (!Parametre.PAUSE) {
-			float deltaTime = Gdx.graphics.getDeltaTime();
-			float frameTime = Math.min(deltaTime, 0.25f);
-			this.monde.accumulator += frameTime;
-			while (this.monde.accumulator >= Monde.STEP_TIME) {
+//			float deltaTime = Gdx.graphics.getDeltaTime();
+//			float frameTime = Math.min(deltaTime, 0.25f);
+//			this.monde.accumulator += frameTime;
+//			while (this.monde.accumulator >= Monde.STEP_TIME) {
 				this.monde.world.step(Monde.STEP_TIME, 6, 2);
-				this.monde.accumulator -= Monde.STEP_TIME;
+//				this.monde.accumulator -= Monde.STEP_TIME;
 				updateCamera(joueurService, cameraGame);
-			}
+//			}
 		}
+		updateCamera(joueurService, cameraGame);
 		this.monde.batch.end();
-		System.out.println(System.currentTimeMillis()-debut);
 	}
 
 	private void manageBalle() {
