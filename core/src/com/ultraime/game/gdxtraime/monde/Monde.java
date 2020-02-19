@@ -166,9 +166,9 @@ public class Monde {
 		for (int i = 0; i < bodies.size(); i++) {
 			final Body body = bodies.get(i);
 			final EntiteVivante entiteVivante = (EntiteVivante) body.getUserData();
-			final float x = (body.getPosition().x * MULTIPLICATEUR) - (MULTIPLICATEUR / 2);
-			final float y = (body.getPosition().y * MULTIPLICATEUR) - (MULTIPLICATEUR / 2);
-			entiteVivante.render(batch, x, y);
+			entiteVivante.x = (body.getPosition().x * MULTIPLICATEUR) - (MULTIPLICATEUR / 2);
+			entiteVivante.y = (body.getPosition().y * MULTIPLICATEUR) - (MULTIPLICATEUR / 2);
+			entiteVivante.render(batch);
 		}
 
 	}

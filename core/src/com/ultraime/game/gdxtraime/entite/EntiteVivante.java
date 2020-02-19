@@ -74,12 +74,10 @@ public class EntiteVivante extends Entite implements Serializable {
 
 	/**
 	 * @param batch
-	 * @param posX
-	 * @param posY
 	 */
-	public void render(final SpriteBatch batch, final float posX, final float posY) {
+	public void render(final SpriteBatch batch) {
 		if (animationManager != null) {
-			this.animationManager.render(batch, posX, posY, 0);
+			this.animationManager.render(batch, this.x,this.y, 0);
 		}
 	}
 

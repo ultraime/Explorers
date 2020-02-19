@@ -32,34 +32,32 @@ public class EntiteJoueur extends EntitePersonnage {
 
 	/**
 	 * @param batch
-	 * @param posX
-	 * @param posY
 	 */
-	public void render(final SpriteBatch batch, final float posX, final float posY) {
+	public void render(final SpriteBatch batch) {
 		if (animationBody != null) {
 			switch (direction) {
 			case BAS:
-				this.animationBody.render(batch, posX - 10, posY, 0);
-				this.animationTete.render(batch, posX - 10, posY, 0);
-				this.arme.render(batch, posX, posY, direction);
+				this.animationBody.render(batch, this.x - 10, this.y, 0);
+				this.animationTete.render(batch, this.x - 10, this.y, 0);
+				this.arme.render(batch, this.x, this.y, direction);
 				break;
 			case HAUT:
-				this.arme.render(batch, posX, posY, direction);
-				this.animationBody_h.render(batch, posX - 10, posY, 0);
-				this.animationTete_h.render(batch, posX - 10, posY, 0);
+				this.arme.render(batch, this.x, this.y, direction);
+				this.animationBody_h.render(batch, this.x - 10, this.y, 0);
+				this.animationTete_h.render(batch, this.x - 10, this.y, 0);
 				break;
 			case GAUCHE:
-				this.animationBody_g.render(batch, posX, posY, 0);
-				this.animationTete_g.render(batch, posX, posY, 0);
-				this.arme.render(batch, posX, posY, direction);
+				this.animationBody_g.render(batch, this.x, this.y, 0);
+				this.animationTete_g.render(batch, this.x, this.y, 0);
+				this.arme.render(batch, this.x, this.y, direction);
 				break;
 			case DROITE:
-				this.animationBody_d.render(batch, posX - 10, posY, 0);
-				this.animationTete_d.render(batch, posX - 10, posY, 0);
-				this.arme.render(batch, posX, posY, direction);
+				this.animationBody_d.render(batch, this.x - 10, this.y, 0);
+				this.animationTete_d.render(batch, this.x - 10, this.y, 0);
+				this.arme.render(batch, this.x, this.y, direction);
 				break;
 			default:
-				this.animationBody.render(batch, posX - 10, posY, 0);
+				this.animationBody.render(batch, this.x - 10, this.y, 0);
 				break;
 			}
 

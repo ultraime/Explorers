@@ -16,7 +16,6 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.ultraime.explorers.Evenement.GenerateurAlien;
 import com.ultraime.explorers.Evenement.Interrupteur;
 import com.ultraime.explorers.Evenement.Porte;
-import com.ultraime.explorers.entite.EntiteAlien;
 import com.ultraime.explorers.service.EntiteService;
 import com.ultraime.explorers.service.JoueurService;
 import com.ultraime.explorers.service.MondeBaseService;
@@ -118,16 +117,23 @@ public class EcranTest extends Ecran {
 			startTime = System.currentTimeMillis();
 		}
 
+		// TODO test
+		ArrayList<Body> bEvent = this.mondeService.monde.bodiesEvent;
+		List<Body> generateurAlien = bEvent.stream().filter(b -> (b.getUserData() instanceof GenerateurAlien))
+				.collect(Collectors.toList());
+		System.out.println("creation de 100 unitées :");
+		for (int i = 0; i < 100; i++) {
+			generateurAlien
+					.forEach(item -> ((GenerateurAlien) item.getUserData()).genererAlien((this.mondeService.monde)));
+		}
 	}
 
 	@Override
 	public void render() {
 		if (!isDispose) {
-	
 			this.mondeService.render(this.joueurService, this.cameraGame);
 			this.mondeService.monde.renderDebug(cameraGame.camera);
 //			this.entiteService.manage(this.joueurService.bodyJoueur);
-			
 
 		}
 	}

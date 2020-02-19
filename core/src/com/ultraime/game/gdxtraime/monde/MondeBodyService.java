@@ -40,6 +40,8 @@ public class MondeBodyService {
 		groundBox.setAsBox(largeur / 2, hauteur / 2);
 		groundBody.createFixture(groundBox, 0.0f);
 		groundBody.setUserData(objet);
+		
+		groundBox.dispose();
 
 	}
 
@@ -199,6 +201,8 @@ public class MondeBodyService {
 		Fixture fixture = groundBody.createFixture(groundBox, 0.0f);
 		fixture.setSensor(true);
 		groundBody.setUserData(event);
+		
+		groundBox.dispose();
 		return groundBody;
 	}
 }

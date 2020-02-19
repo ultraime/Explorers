@@ -14,6 +14,8 @@ public class DesktopLauncher {
 //		config.resizable = false;
 		config.width = 1280;// 1280
 		config.height = 720;// 720
+		config.foregroundFPS = 60; // <- limit when focused
+	    config.backgroundFPS = 60; 
 
 		Parametre.initEcran(config.width, config.height);
 		new LwjglApplication(new EcranManager(), config);

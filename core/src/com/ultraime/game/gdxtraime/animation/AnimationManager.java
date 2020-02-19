@@ -65,6 +65,18 @@ public class AnimationManager implements Serializable {
 	 * @param largeur
 	 * @param hauteur
 	 * @param vitesseAnimation
+	 * @param texture
+	 */
+	public AnimationManager(final float largeur, final float hauteur, final float vitesseAnimation,
+			final Texture texture) {
+		this.texture = texture;
+		creerAnimation(texture, largeur, hauteur, vitesseAnimation);
+	}
+
+	/**
+	 * @param largeur
+	 * @param hauteur
+	 * @param vitesseAnimation
 	 * @param lienImage
 	 */
 	public void creerAnimationByLienImage() {

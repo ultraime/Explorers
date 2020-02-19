@@ -255,21 +255,23 @@ public class MondeBaseService {
 
 		this.monde.batch.begin();
 		this.monde.renderBodies();
-		
 		this.monde.renderEvent();
+
 		manageBalle();
 		this.monde.removeDeathEntite(this.monde.bodiesEntiteVivant);
 		this.monde.removeDeathEntite(this.monde.bodiesBullets);
-		
 
 		if (!Parametre.PAUSE) {
 //			float deltaTime = Gdx.graphics.getDeltaTime();
 //			float frameTime = Math.min(deltaTime, 0.25f);
 //			this.monde.accumulator += frameTime;
 //			while (this.monde.accumulator >= Monde.STEP_TIME) {
-				this.monde.world.step(Monde.STEP_TIME, 6, 2);
+//				this.monde.world.step(Monde.STEP_TIME, 6, 2);
+			long debut = System.currentTimeMillis();
+			this.monde.world.step(Math.min(Gdx.graphics.getDeltaTime(), 0.15f), 6, 2);
+			System.out.println("ABO3 -> "+ (System.currentTimeMillis()-debut));
 //				this.monde.accumulator -= Monde.STEP_TIME;
-				updateCamera(joueurService, cameraGame);
+			updateCamera(joueurService, cameraGame);
 //			}
 		}
 		updateCamera(joueurService, cameraGame);
@@ -345,10 +347,8 @@ public class MondeBaseService {
 			this.monde.addEvent(generateurAlien);
 		}
 
-
-
 	}
-	
+
 	/**
 	 * @param object
 	 * @param posX
